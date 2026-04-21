@@ -40,7 +40,11 @@ def main():
             json.dump(data, f, ensure_ascii=False, indent=2)
         print("Datos actualizados correctamente en onpe_data.json")
     else:
-        print("No se pudo obtener datos de la ONPE. Revisa los endpoints o bloqueos.")
+        print("No se pudo obtener datos de la ONPE. Creando onpe_data.json vacío para evitar errores...")
+        # Create a dummy JSON so git add doesn't fail
+        fallback_data = {"error": "API no disponible", "timestamp": str(datetime.now())}
+        with open('onpe_data.json', 'w', encoding='utf-8') as f:
+            json.dump(fallback_data, f, ensure_ascii=False, indent=2)
 
 if __name__ == '__main__':
     main()
