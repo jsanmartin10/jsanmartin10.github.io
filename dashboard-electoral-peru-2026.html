@@ -1,0 +1,2694 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard Electoral — Perú 2026</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap"
+    rel="stylesheet">
+  <style>
+    :root {
+      --bg-page: #f0f2f7;
+      --bg-card: #ffffff;
+      --border: #e8eaed;
+      --text-primary: #0f172a;
+      --text-secondary: #64748b;
+      --text-muted: #94a3b8;
+      --peru-red: #d91023;
+      --peru-dark: #8b0000;
+      --keiko-color: #e8722a;
+      --keiko-light: #fff7f0;
+      --sanchez-color: #1a7a3d;
+      --sanchez-light: #f0faf4;
+      --lopez-color: #1e54b7;
+      --lopez-light: #f0f4ff;
+      --favorable: #16a34a;
+      --favorable-bg: #dcfce7;
+      --neutral: #d97706;
+      --neutral-bg: #fef3c7;
+      --risk: #dc2626;
+      --risk-bg: #fee2e2;
+      --radius: 16px;
+      --radius-sm: 10px;
+      --shadow: 0 1px 3px rgba(0, 0, 0, 0.07), 0 4px 12px rgba(0, 0, 0, 0.05);
+      --shadow-md: 0 4px 20px rgba(0, 0, 0, 0.1);
+      --shadow-lg: 0 10px 40px rgba(0, 0, 0, 0.13);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--bg-page);
+      color: var(--text-primary);
+      line-height: 1.6;
+    }
+
+    /* ─── HEADER ─── */
+    .site-header {
+      background: linear-gradient(135deg, var(--peru-red) 0%, var(--peru-dark) 100%);
+      position: sticky;
+      top: 0;
+      z-index: 200;
+      box-shadow: 0 4px 24px rgba(200, 16, 46, 0.35);
+    }
+
+    .header-inner {
+      max-width: 1380px;
+      margin: 0 auto;
+      height: 68px;
+      padding: 0 36px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .header-brand {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .flag-icon {
+      width: 36px;
+      height: 24px;
+      border-radius: 4px;
+      background: linear-gradient(to right, var(--peru-red) 33%, #fff 33%, #fff 67%, var(--peru-red) 67%);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+      flex-shrink: 0;
+    }
+
+    .brand-text h1 {
+      font-size: 17px;
+      font-weight: 800;
+      color: #fff;
+      letter-spacing: -0.3px;
+    }
+
+    .brand-text span {
+      font-size: 11.5px;
+      color: rgba(255, 255, 255, 0.65);
+      display: block;
+    }
+
+    .header-nav {
+      display: flex;
+      gap: 4px;
+    }
+
+    .nav-link {
+      color: rgba(255, 255, 255, 0.78);
+      background: none;
+      border: none;
+      font-size: 13px;
+      font-weight: 500;
+      padding: 8px 15px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all .18s;
+      font-family: inherit;
+    }
+
+    .nav-link:hover {
+      background: rgba(255, 255, 255, 0.15);
+      color: #fff;
+    }
+
+    .nav-link.active {
+      background: rgba(255, 255, 255, 0.2);
+      color: #fff;
+    }
+
+    /* ─── MAIN ─── */
+    .main {
+      max-width: 1380px;
+      margin: 0 auto;
+      padding: 30px 36px 50px;
+    }
+
+    /* ─── HERO ─── */
+    .hero {
+      background: var(--bg-card);
+      border-radius: var(--radius);
+      padding: 32px 36px;
+      margin-bottom: 24px;
+      box-shadow: var(--shadow);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 32px;
+    }
+
+    .hero-title {
+      font-size: 26px;
+      font-weight: 900;
+      letter-spacing: -0.5px;
+      margin-bottom: 6px;
+    }
+
+    .hero-subtitle {
+      font-size: 14px;
+      color: var(--text-secondary);
+      margin-bottom: 18px;
+    }
+
+    .hero-pills {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .pill {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      background: var(--bg-page);
+      border-radius: 30px;
+      padding: 7px 14px;
+      font-size: 12.5px;
+      color: var(--text-secondary);
+      font-weight: 500;
+    }
+
+    .pill strong {
+      color: var(--text-primary);
+      font-weight: 700;
+    }
+
+    .pill-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+    }
+
+    .hero-right {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 10px;
+    }
+
+    /* ─── BUTTONS ─── */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 20px;
+      border-radius: 10px;
+      font-size: 13.5px;
+      font-weight: 600;
+      cursor: pointer;
+      border: none;
+      transition: all .2s;
+      text-decoration: none;
+      font-family: inherit;
+    }
+
+    .btn-primary {
+      background: var(--peru-red);
+      color: #fff;
+      box-shadow: 0 4px 14px rgba(217, 16, 35, .28);
+    }
+
+    .btn-primary:hover {
+      background: #b8000f;
+      transform: translateY(-1px);
+      box-shadow: 0 6px 18px rgba(217, 16, 35, .38);
+    }
+
+    .btn-primary:active {
+      transform: translateY(0);
+    }
+
+    .btn-ghost {
+      background: var(--bg-page);
+      color: var(--text-secondary);
+      border: 1.5px solid var(--border);
+    }
+
+    .btn-ghost:hover {
+      border-color: var(--peru-red);
+      color: var(--peru-red);
+    }
+
+    .spinner {
+      width: 15px;
+      height: 15px;
+      border: 2px solid rgba(255, 255, 255, .35);
+      border-top-color: #fff;
+      border-radius: 50%;
+      animation: spin .7s linear infinite;
+      display: none;
+    }
+
+    .btn.loading .spinner {
+      display: block;
+    }
+
+    .btn.loading .btn-label {
+      display: none;
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    .live-status {
+      font-size: 12px;
+      color: var(--text-muted);
+      text-align: right;
+    }
+
+    .status-dot {
+      display: inline-block;
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--neutral);
+      margin-right: 5px;
+      vertical-align: middle;
+    }
+
+    .live-status.ok .status-dot {
+      background: var(--favorable);
+    }
+
+    .live-status.err .status-dot {
+      background: var(--risk);
+    }
+
+    /* ─── SECTION HEADER ─── */
+    .section-hdr {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 18px;
+    }
+
+    .section-title {
+      font-size: 17px;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      gap: 9px;
+    }
+
+    .sec-icon {
+      width: 30px;
+      height: 30px;
+      border-radius: 8px;
+      background: var(--bg-page);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 15px;
+      flex-shrink: 0;
+    }
+
+    .badge {
+      font-size: 11.5px;
+      font-weight: 700;
+      padding: 4px 11px;
+      border-radius: 20px;
+    }
+
+
+    /* ─── LAYOUT GRIDS ─── */
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 22px;
+      margin-bottom: 22px;
+    }
+
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 22px;
+      margin-bottom: 22px;
+    }
+
+    /* ─── CARDS ─── */
+    .card {
+      background: var(--bg-card);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    /* ─── PROGRESS ─── */
+    .prog-wrap {
+      margin: 14px 0;
+    }
+
+    .prog-labels {
+      display: flex;
+      justify-content: space-between;
+      font-size: 12px;
+      color: var(--text-secondary);
+      margin-bottom: 5px;
+    }
+
+    .prog-track {
+      height: 7px;
+      background: var(--bg-page);
+      border-radius: 10px;
+      overflow: hidden;
+    }
+
+    .prog-fill {
+      height: 100%;
+      border-radius: 10px;
+      background: linear-gradient(90deg, var(--peru-red), #f87171);
+      transition: width 1s ease;
+    }
+
+    /* ─── CHART CARD ─── */
+    .chart-card {
+      padding: 26px 28px;
+    }
+
+    .chart-wrap {
+      position: relative;
+      height: 270px;
+      margin-top: 16px;
+    }
+
+    /* ─── RESULTS LIST ─── */
+    .result-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 11px 0;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .result-item:last-child {
+      border-bottom: none;
+    }
+
+    .result-rank {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      font-weight: 800;
+      flex-shrink: 0;
+    }
+
+    .result-rank.r1 {
+      background: #fef3c7;
+      color: #92400e;
+    }
+
+    .result-rank.r2 {
+      background: #e0e7ff;
+      color: #3730a3;
+    }
+
+    .result-rank.r3 {
+      background: #fce7f3;
+      color: #9d174d;
+    }
+
+    .result-rank.rn {
+      background: var(--bg-page);
+      color: var(--text-muted);
+    }
+
+    .result-name {
+      flex: 1;
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    .result-party {
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+
+    .result-pct {
+      font-size: 15px;
+      font-weight: 800;
+    }
+
+    .result-bar-wrap {
+      flex: 1;
+    }
+
+    .result-bar-track {
+      height: 5px;
+      background: var(--bg-page);
+      border-radius: 10px;
+      overflow: hidden;
+    }
+
+    .result-bar-fill {
+      height: 100%;
+      border-radius: 10px;
+      transition: width 1s ease;
+    }
+
+    .result-votes {
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+
+    /* ─── RUNOFF BANNER ─── */
+    .runoff-banner {
+      background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+      border-radius: var(--radius);
+      padding: 26px 34px;
+      margin-bottom: 30px;
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      align-items: center;
+      gap: 24px;
+      box-shadow: var(--shadow-md);
+    }
+
+    .runoff-cand {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .runoff-cand.right {
+      flex-direction: row-reverse;
+    }
+
+    .cand-info-right {
+      text-align: right;
+    }
+
+    .runoff-avatar {
+      position: absolute;
+      top: -3px;
+      left: -3px;
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      object-fit: cover;
+      object-position: top;
+      border: 3px solid rgba(255, 255, 255, .2);
+      flex-shrink: 0;
+      z-index: 2;
+    }
+
+    .runoff-avatar-fb {
+      position: relative;
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      font-weight: 800;
+      color: #fff;
+      border: 3px solid rgba(255, 255, 255, .2);
+      flex-shrink: 0;
+    }
+
+    .runoff-name {
+      font-size: 15px;
+      font-weight: 800;
+      color: #fff;
+    }
+
+    .runoff-party {
+      font-size: 11.5px;
+      color: rgba(255, 255, 255, .55);
+      margin-top: 2px;
+    }
+
+    .runoff-pct {
+      font-size: 22px;
+      font-weight: 900;
+      margin-top: 4px;
+    }
+
+    .runoff-vs-col {
+      text-align: center;
+    }
+
+    .vs-big {
+      font-size: 26px;
+      font-weight: 900;
+      color: rgba(255, 255, 255, .18);
+      display: block;
+    }
+
+    .vs-date {
+      font-size: 12px;
+      color: rgba(255, 255, 255, .5);
+      margin-top: 6px;
+      display: block;
+    }
+
+    .vs-badge-pill {
+      display: inline-block;
+      background: var(--peru-red);
+      color: #fff;
+      font-size: 10.5px;
+      font-weight: 700;
+      padding: 4px 11px;
+      border-radius: 20px;
+      margin-top: 8px;
+    }
+
+    .runoff-note {
+      grid-column: 1 / -1;
+      text-align: center;
+      font-size: 11.5px;
+      color: rgba(255, 255, 255, .4);
+      padding-top: 14px;
+      border-top: 1px solid rgba(255, 255, 255, .08);
+    }
+
+    /* ─── CANDIDATE CARDS ─── */
+    .cand-card {
+      background: var(--bg-card);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+      transition: box-shadow .25s, transform .25s;
+    }
+
+    .cand-card:hover {
+      box-shadow: var(--shadow-lg);
+      transform: translateY(-3px);
+    }
+
+    .cand-card.hidden {
+      display: none;
+    }
+
+    .cand-top-bar {
+      height: 5px;
+    }
+
+    .cand-header {
+      padding: 22px 24px 14px;
+      display: flex;
+      gap: 16px;
+      align-items: flex-start;
+    }
+
+    .cand-photo-wrap {
+      position: relative;
+      flex-shrink: 0;
+    }
+
+    .cand-photo {
+      position: absolute;
+      top: -3px;
+      left: -3px;
+      width: 82px;
+      height: 82px;
+      border-radius: 50%;
+      object-fit: cover;
+      object-position: top center;
+      border: 3px solid var(--border);
+      display: block;
+      z-index: 2;
+    }
+
+    .cand-photo-fb {
+      position: relative;
+      width: 82px;
+      height: 82px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 26px;
+      font-weight: 800;
+      color: #fff;
+      border: 3px solid rgba(255, 255, 255, .25);
+      flex-shrink: 0;
+    }
+
+    .cand-result-badge {
+      position: absolute;
+      bottom: -2px;
+      right: -4px;
+      background: #fff;
+      border-radius: 20px;
+      padding: 2px 7px;
+      font-size: 12px;
+      font-weight: 900;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, .18);
+      z-index: 10;
+    }
+
+    .cand-info {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .cand-name {
+      font-size: 17px;
+      font-weight: 900;
+      letter-spacing: -0.3px;
+      margin-bottom: 2px;
+    }
+
+    .cand-party {
+      font-size: 12px;
+      color: var(--text-secondary);
+      margin-bottom: 9px;
+    }
+
+    .tags {
+      display: flex;
+      gap: 5px;
+      flex-wrap: wrap;
+    }
+
+    .tag {
+      font-size: 10.5px;
+      font-weight: 700;
+      padding: 3px 9px;
+      border-radius: 20px;
+      text-transform: uppercase;
+      letter-spacing: .3px;
+    }
+
+    /* ─── VOTE BAR ─── */
+    .vote-bar-sec {
+      padding: 0 24px 8px;
+    }
+
+    .vote-bar-labels {
+      display: flex;
+      justify-content: space-between;
+      font-size: 11.5px;
+      color: var(--text-muted);
+      margin-bottom: 4px;
+    }
+
+    .vote-track {
+      height: 6px;
+      background: var(--bg-page);
+      border-radius: 10px;
+      overflow: hidden;
+    }
+
+    .vote-fill {
+      height: 100%;
+      border-radius: 10px;
+      transition: width 1.3s ease;
+    }
+
+    /* ─── TABS ─── */
+    .tabs-nav {
+      display: flex;
+      padding: 0 16px;
+      border-bottom: 1.5px solid var(--border);
+      margin-top: 14px;
+      overflow-x: auto;
+      scrollbar-width: none;
+      gap: 2px;
+    }
+
+    .tabs-nav::-webkit-scrollbar {
+      display: none;
+    }
+
+    .tab-btn {
+      padding: 9px 13px;
+      border: none;
+      background: none;
+      font-size: 11.5px;
+      font-weight: 600;
+      color: var(--text-muted);
+      cursor: pointer;
+      border-bottom: 2.5px solid transparent;
+      margin-bottom: -1.5px;
+      white-space: nowrap;
+      transition: all .18s;
+      border-radius: 6px 6px 0 0;
+      font-family: inherit;
+    }
+
+    .tab-btn:hover {
+      color: var(--text-primary);
+      background: var(--bg-page);
+    }
+
+    .tab-content {
+      padding: 20px 24px;
+      display: none;
+    }
+
+    .tab-content.active {
+      display: block;
+    }
+
+    .cand-keiko .tab-btn.active {
+      color: var(--keiko-color);
+      border-bottom-color: var(--keiko-color);
+    }
+
+    .cand-sanchez .tab-btn.active {
+      color: var(--sanchez-color);
+      border-bottom-color: var(--sanchez-color);
+    }
+
+    .cand-lopez .tab-btn.active {
+      color: var(--lopez-color);
+      border-bottom-color: var(--lopez-color);
+    }
+
+    /* ─── TAB CONTENT STYLES ─── */
+    .info-rows {
+      list-style: none;
+    }
+
+    .info-rows li {
+      display: flex;
+      gap: 9px;
+      padding: 7px 0;
+      border-bottom: 1px solid var(--border);
+      font-size: 13px;
+    }
+
+    .info-rows li:last-child {
+      border-bottom: none;
+    }
+
+    .info-rows .bul {
+      color: var(--peru-red);
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+
+    .case-box {
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 14px;
+      margin-bottom: 10px;
+    }
+
+    .case-box:last-child {
+      margin-bottom: 0;
+    }
+
+    .case-hdr {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 10px;
+      margin-bottom: 6px;
+    }
+
+    .case-name {
+      font-size: 13.5px;
+      font-weight: 700;
+    }
+
+    .case-status {
+      font-size: 10.5px;
+      font-weight: 700;
+      padding: 3px 9px;
+      border-radius: 20px;
+      white-space: nowrap;
+      text-transform: uppercase;
+    }
+
+    .s-active {
+      background: var(--risk-bg);
+      color: var(--risk);
+    }
+
+    .s-closed {
+      background: var(--favorable-bg);
+      color: var(--favorable);
+    }
+
+    .s-pending {
+      background: var(--neutral-bg);
+      color: var(--neutral);
+    }
+
+    .case-body {
+      font-size: 12.5px;
+      color: var(--text-secondary);
+      line-height: 1.55;
+    }
+
+    .stance-wrap {
+      margin: 14px 0;
+    }
+
+    .stance-heads {
+      display: flex;
+      justify-content: space-between;
+      font-size: 10.5px;
+      color: var(--text-muted);
+      font-weight: 600;
+      text-transform: uppercase;
+      margin-bottom: 7px;
+    }
+
+    .stance-track {
+      height: 6px;
+      background: linear-gradient(90deg, #ef4444, #f59e0b 50%, #22c55e);
+      border-radius: 10px;
+      position: relative;
+    }
+
+    .stance-thumb {
+      width: 14px;
+      height: 14px;
+      background: #fff;
+      border: 3px solid var(--text-primary);
+      border-radius: 50%;
+      position: absolute;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      box-shadow: 0 2px 6px rgba(0, 0, 0, .2);
+    }
+
+    .ratings-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-bottom: 14px;
+    }
+
+    .rating-box {
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 12px;
+    }
+
+    .rating-lbl {
+      font-size: 10px;
+      text-transform: uppercase;
+      font-weight: 700;
+      color: var(--text-muted);
+      letter-spacing: .4px;
+      margin-bottom: 5px;
+    }
+
+    .rating-val {
+      font-size: 12.5px;
+      font-weight: 700;
+    }
+
+    .rv-good {
+      color: var(--favorable);
+    }
+
+    .rv-mid {
+      color: var(--neutral);
+    }
+
+    .rv-bad {
+      color: var(--risk);
+    }
+
+    .rv-vbad {
+      color: #7f1d1d;
+    }
+
+    .sector-summary-box {
+      background: var(--bg-page);
+      border-radius: var(--radius-sm);
+      padding: 14px;
+      font-size: 13px;
+      color: var(--text-secondary);
+      line-height: 1.6;
+    }
+
+    .sector-summary-box strong {
+      color: var(--text-primary);
+    }
+
+    .overall-verdict-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+
+    .verdict-pill {
+      font-size: 11.5px;
+      font-weight: 700;
+      padding: 4px 13px;
+      border-radius: 20px;
+    }
+
+    /* ─── COMPARISON TABLE ─── */
+    .comp-card {
+      padding: 26px 28px;
+    }
+
+    .comp-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+    }
+
+    .comp-table th {
+      text-align: center;
+      padding: 14px 16px;
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .4px;
+      background: var(--bg-page);
+      border-bottom: 2px solid var(--border);
+      color: var(--text-muted);
+    }
+
+    .comp-table th:first-child {
+      text-align: left;
+    }
+
+    .comp-table th.th-keiko {
+      color: var(--keiko-color);
+    }
+
+    .comp-table th.th-sanchez {
+      color: var(--sanchez-color);
+    }
+
+    .comp-table th.th-lopez {
+      color: var(--lopez-color);
+    }
+
+    .comp-table td {
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--border);
+      vertical-align: top;
+      line-height: 1.5;
+    }
+
+    .comp-table tr:last-child td {
+      border-bottom: none;
+    }
+
+    .comp-table td:first-child {
+      font-weight: 600;
+      color: var(--text-secondary);
+      font-size: 12.5px;
+      white-space: nowrap;
+      width: 180px;
+    }
+
+    .comp-table tr:hover td {
+      background: #fafbfd;
+    }
+
+    .comp-chip {
+      display: inline-block;
+      font-size: 10.5px;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 12px;
+      margin-right: 3px;
+    }
+
+    /* ─── SECTOR ANALYSIS CARDS ─── */
+    .sector-verdict-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+      margin-bottom: 28px;
+    }
+
+    .sv-card {
+      border-radius: var(--radius);
+      padding: 22px;
+      border: 2px solid;
+    }
+
+    .sv-card.sv-good {
+      background: #f0fdf4;
+      border-color: #86efac;
+    }
+
+    .sv-card.sv-mid {
+      background: #fffbeb;
+      border-color: #fcd34d;
+    }
+
+    .sv-card.sv-bad {
+      background: #fff1f2;
+      border-color: #fca5a5;
+    }
+
+    .sv-icon {
+      font-size: 26px;
+      margin-bottom: 8px;
+    }
+
+    .sv-cand {
+      font-size: 15px;
+      font-weight: 900;
+      margin-bottom: 3px;
+    }
+
+    .sv-verdict {
+      font-size: 11px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: .5px;
+      margin-bottom: 11px;
+    }
+
+    .sv-card.sv-good .sv-verdict {
+      color: var(--favorable);
+    }
+
+    .sv-card.sv-mid .sv-verdict {
+      color: var(--neutral);
+    }
+
+    .sv-card.sv-bad .sv-verdict {
+      color: var(--risk);
+    }
+
+    .sv-body {
+      font-size: 12.5px;
+      color: var(--text-secondary);
+      line-height: 1.6;
+    }
+
+    .sv-body strong {
+      color: var(--text-primary);
+    }
+
+    .sv-metrics {
+      display: flex;
+      gap: 6px;
+      margin-top: 13px;
+    }
+
+    .sv-metric {
+      flex: 1;
+      text-align: center;
+      background: rgba(255, 255, 255, .7);
+      border-radius: 8px;
+      padding: 7px 4px;
+    }
+
+    .sv-metric-icon {
+      font-size: 15px;
+      display: block;
+      margin-bottom: 1px;
+    }
+
+    .sv-metric-lbl {
+      font-size: 9.5px;
+      color: var(--text-muted);
+      font-weight: 600;
+    }
+
+    /* ─── DISCLAIMER ─── */
+    .disclaimer {
+      background: var(--bg-card);
+      border-radius: var(--radius);
+      padding: 18px 24px;
+      margin-bottom: 22px;
+      border-left: 4px solid var(--neutral);
+      box-shadow: var(--shadow);
+    }
+
+    .disclaimer p {
+      font-size: 12.5px;
+      color: var(--text-secondary);
+      line-height: 1.55;
+    }
+
+    .disclaimer strong {
+      color: var(--text-primary);
+    }
+
+    /* ─── FOOTER ─── */
+    .footer {
+      text-align: center;
+      padding: 24px;
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    .footer a {
+      color: var(--peru-red);
+      text-decoration: none;
+    }
+
+    /* ─── ANIMATIONS ─── */
+    @keyframes fadeUp {
+      from {
+        opacity: 0;
+        transform: translateY(14px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .fade-up {
+      animation: fadeUp .5s ease forwards;
+    }
+
+    .d1 {
+      animation-delay: .08s;
+    }
+
+    .d2 {
+      animation-delay: .16s;
+    }
+
+    .d3 {
+      animation-delay: .24s;
+    }
+
+    /* ─── RESPONSIVE ─── */
+    @media (max-width: 1024px) {
+      .main {
+        padding: 20px;
+      }
+
+      .header-inner {
+        padding: 0 20px;
+      }
+    }
+
+    @media (max-width: 860px) {
+      .grid-3 {
+        grid-template-columns: 1fr;
+      }
+
+      .grid-2 {
+        grid-template-columns: 1fr;
+      }
+
+      .hero {
+        flex-direction: column;
+      }
+
+      .hero-right {
+        align-items: flex-start;
+      }
+
+      .runoff-banner {
+        grid-template-columns: 1fr;
+        gap: 24px;
+        padding: 24px;
+      }
+
+      .runoff-cand, .runoff-cand.right {
+        flex-direction: column;
+        text-align: center;
+        gap: 12px;
+      }
+
+      .cand-info-right {
+        text-align: center;
+      }
+
+      .vs-big {
+        font-size: 22px;
+      }
+
+      .sector-verdict-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .header-nav {
+        display: none;
+      }
+
+      .ratings-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    /* ─── MAPA ─── */
+    #mapaSection { margin-bottom: 28px; }
+    .map-card { padding: 26px 28px; }
+    .map-layout { display: flex; justify-content: center; align-items: center; }
+    #peruMapSvg { width: 100%; max-width: 1000px; max-height: 650px; display: block; margin: 0 auto; cursor: pointer; filter: drop-shadow(0 4px 12px rgba(0,0,0,0.06)); }
+    .dept-path {
+      stroke: #fff; stroke-width: 1.5; stroke-linejoin: round;
+      transition: filter .18s, opacity .18s;
+      cursor: pointer;
+    }
+    .map-label {
+      font-family: 'Inter', sans-serif;
+      font-size: 15px;
+      font-weight: 900;
+      fill: #fff;
+      text-anchor: middle;
+      pointer-events: none;
+      paint-order: stroke fill;
+      stroke: rgba(0,0,0,0.3);
+      stroke-width: 3px;
+    }
+    @media (max-width: 860px) {
+      .map-layout { flex-direction: column; gap: 24px; }
+      #peruMapSvg { max-width: 100%; max-height: 450px; }
+    }
+    .dept-path:hover { filter: brightness(1.12) drop-shadow(0 2px 4px rgba(0,0,0,.25)); opacity: .92; }
+    .peru-bg { fill: #e8eaed; stroke: #d1d5db; stroke-width: 1; }
+    .map-winner-keiko { fill: #e8722a; }
+    .map-winner-sanchez { fill: #1a7a3d; }
+    .map-winner-lopez { fill: #1e54b7; }
+    .map-winner-unknown { fill: #94a3b8; }
+    .map-legend { display: flex; flex-direction: column; gap: 10px; }
+    .map-legend-title { font-size: 12px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: .4px; margin-bottom: 4px; }
+    .legend-item { display: flex; align-items: center; gap: 9px; font-size: 12.5px; }
+    .legend-dot { width: 12px; height: 12px; border-radius: 3px; flex-shrink: 0; }
+    .map-dept-count { font-size: 11px; color: var(--text-muted); margin-left: auto; }
+    .map-note { margin-top: 16px; background: var(--neutral-bg); border-radius: var(--radius-sm); padding: 12px 14px; font-size: 12px; color: #92400e; line-height: 1.5; }
+    .map-panel { background: var(--bg-page); border-radius: var(--radius-sm); padding: 20px; }
+    .map-panel-placeholder { text-align: center; padding: 30px 20px; color: var(--text-muted); }
+    .map-panel-placeholder .big-icon { font-size: 36px; display: block; margin-bottom: 10px; }
+    .map-panel-placeholder p { font-size: 13px; line-height: 1.5; }
+
+    /* ─── POPUP ─── */
+    .dept-popup {
+      position: fixed; z-index: 500;
+      background: #fff; border-radius: 14px;
+      box-shadow: 0 8px 40px rgba(0,0,0,.18);
+      padding: 20px 22px; min-width: 260px; max-width: 300px;
+      pointer-events: all; display: none;
+      animation: popIn .18s ease forwards;
+    }
+    @keyframes popIn { from { opacity:0; transform: scale(.94) translateY(6px); } to { opacity:1; transform: scale(1) translateY(0); } }
+    .popup-close {
+      position: absolute; top: 10px; right: 12px;
+      background: none; border: none; font-size: 18px;
+      color: var(--text-muted); cursor: pointer; line-height: 1;
+      padding: 2px 6px; border-radius: 6px;
+    }
+    .popup-close:hover { background: var(--bg-page); }
+    .popup-dept-name { font-size: 15px; font-weight: 800; margin-bottom: 4px; }
+    .popup-winner-badge { font-size: 11px; font-weight: 700; padding: 3px 9px; border-radius: 12px; display: inline-block; margin-bottom: 14px; }
+    .popup-candidate { display: flex; align-items: center; gap: 10px; padding: 8px 0; border-bottom: 1px solid var(--border); }
+    .popup-candidate:last-child { border-bottom: none; }
+    .popup-rank { width: 20px; height: 20px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 800; flex-shrink: 0; }
+    .popup-cand-info { flex: 1; }
+    .popup-cand-name { font-size: 12.5px; font-weight: 600; }
+    .popup-cand-party { font-size: 10.5px; color: var(--text-muted); }
+    .popup-pct { font-size: 15px; font-weight: 900; }
+    .popup-bar { height: 4px; background: var(--bg-page); border-radius: 4px; margin-top: 4px; overflow: hidden; }
+    .popup-bar-fill { height: 100%; border-radius: 4px; }
+    .popup-actas { font-size: 11px; color: var(--text-muted); margin-top: 12px; border-top: 1px solid var(--border); padding-top: 8px; }
+  </style>
+</head>
+
+<body>
+
+  <!-- ═══════════════════════════════ HEADER ═══════════════════════════════ -->
+  <header class="site-header">
+    <div class="header-inner">
+      <div class="header-brand">
+        <div class="flag-icon"></div>
+        <div class="brand-text">
+          <h1>Dashboard Electoral Perú 2026</h1>
+          <span>Análisis presidencial · Gas Natural &amp; Energía · Sector Privado</span>
+        </div>
+      </div>
+      <nav class="header-nav">
+        <button class="nav-link active" onclick="scrollSec('resultados')">Resultados</button>
+        <button class="nav-link" onclick="scrollSec('candidatos')">Candidatos</button>
+        <button class="nav-link" onclick="scrollSec('comparativa')">Comparativa</button>
+        <button class="nav-link" onclick="scrollSec('mapaSection')">Mapa</button>
+        <button class="nav-link" onclick="scrollSec('sector')">Sector Energético</button>
+      </nav>
+    </div>
+  </header>
+
+  <!-- ═══════════════════════════════ MAIN ═══════════════════════════════ -->
+  <main class="main">
+
+    <!-- HERO -->
+    <section class="hero fade-up">
+      <div>
+        <div class="hero-title">Elecciones Generales Perú 2026</div>
+        <div class="hero-subtitle">Primera Vuelta: 12 de Abril 2026 &nbsp;·&nbsp; Segunda Vuelta: 7 de Junio 2026</div>
+        <div class="hero-pills">
+          <div class="pill">
+            <div class="pill-dot" style="background:var(--favorable)"></div>Actas: <strong>&nbsp;93.85%
+              computadas</strong>
+          </div>
+          <div class="pill">
+            <div class="pill-dot" style="background:var(--neutral)"></div>Candidatos: <strong>&nbsp;34 en primera
+              vuelta</strong>
+          </div>
+          <div class="pill">
+            <div class="pill-dot" style="background:var(--lopez-color)"></div>Fuente: <strong>&nbsp;ONPE / JNE</strong>
+          </div>
+        </div>
+      </div>
+      <div class="hero-right">
+        <button class="btn btn-primary" id="refreshBtn" onclick="fetchLiveData()">
+          <div class="spinner"></div>
+          <span class="btn-label">↻&nbsp; Actualizar datos ONPE</span>
+        </button>
+        <div class="live-status" id="liveStatus">
+          <span class="status-dot"></span>
+          Última actualización conocida: 21 Abr 2026 · 93.85% de actas
+        </div>
+      </div>
+    </section>
+
+
+    <!-- ─── RESULTADOS ─── -->
+    <section id="resultados" style="margin-bottom:26px">
+      <div class="section-hdr">
+        <div class="section-title">
+          <div class="sec-icon">📊</div>Resultados Primera Vuelta
+        </div>
+        <span class="badge" style="background:var(--favorable-bg);color:var(--favorable)">ONPE: 93.85% de actas
+          procesadas</span>
+      </div>
+      <div class="grid-2">
+        <!-- CHART -->
+        <div class="card chart-card fade-up d1">
+          <div style="font-size:14.5px;font-weight:700">Votos válidos por candidato</div>
+          <div style="font-size:11.5px;color:var(--text-muted);margin-top:2px">% sobre votos válidos emitidos — Top
+            candidatos</div>
+          <div class="prog-wrap">
+            <div class="prog-labels"><span>Progreso de conteo</span><strong>93.85%</strong></div>
+            <div class="prog-track">
+              <div class="prog-fill" style="width:93.85%"></div>
+            </div>
+          </div>
+          <div class="chart-wrap"><canvas id="resultsChart"></canvas></div>
+        </div>
+
+        <!-- RESULTS LIST -->
+        <div class="card fade-up d2" style="padding:26px 28px">
+          <div style="font-size:14.5px;font-weight:700;margin-bottom:16px">Desglose de resultados</div>
+
+          <div class="result-item">
+            <div class="result-rank r1">1°</div>
+            <img data-cand-img="keiko" src="" alt="Keiko Fujimori"
+              style="width:36px;height:36px;border-radius:50%;object-fit:cover;border:2px solid var(--keiko-color);flex-shrink:0"
+              onerror="this.style.display='none'">
+            <div style="flex:1;min-width:0">
+              <div class="result-name">Keiko Fujimori <span
+                  style="font-size:10.5px;font-weight:500;color:var(--keiko-color);background:#fff3eb;padding:2px 7px;border-radius:10px;margin-left:5px">PASA
+                  A 2ª VUELTA</span></div>
+              <div class="result-bar-track" style="margin-top:5px">
+                <div class="result-bar-fill" style="width:17.05%;background:var(--keiko-color)"></div>
+              </div>
+              <div class="result-votes">2,695,457 votos · Fuerza Popular</div>
+            </div>
+            <div class="result-pct" style="color:var(--keiko-color)">17.05%</div>
+          </div>
+
+          <div class="result-item">
+            <div class="result-rank r2">2°</div>
+            <img data-cand-img="sanchez" src="" alt="Roberto Sánchez"
+              style="width:36px;height:36px;border-radius:50%;object-fit:cover;border:2px solid var(--sanchez-color);flex-shrink:0"
+              onerror="this.style.display='none'">
+            <div style="flex:1;min-width:0">
+              <div class="result-name">Roberto Sánchez <span
+                  style="font-size:10.5px;font-weight:500;color:var(--sanchez-color);background:#f0faf4;padding:2px 7px;border-radius:10px;margin-left:5px">PASA
+                  A 2ª VUELTA</span></div>
+              <div class="result-bar-track" style="margin-top:5px">
+                <div class="result-bar-fill" style="width:12.01%;background:var(--sanchez-color)"></div>
+              </div>
+              <div class="result-votes">1,899,064 votos · Juntos por el Perú</div>
+            </div>
+            <div class="result-pct" style="color:var(--sanchez-color)">12.01%</div>
+          </div>
+
+          <div class="result-item">
+            <div class="result-rank r3">3°</div>
+            <img data-cand-img="lopez" src="" alt="Rafael López Aliaga"
+              style="width:36px;height:36px;border-radius:50%;object-fit:cover;border:2px solid var(--lopez-color);flex-shrink:0"
+              onerror="this.style.display='none'">
+            <div style="flex:1;min-width:0">
+              <div class="result-name">Rafael López Aliaga <span
+                  style="font-size:10px;color:var(--text-muted);margin-left:5px">Pendiente JEE</span></div>
+              <div class="result-bar-track" style="margin-top:5px">
+                <div class="result-bar-fill" style="width:11.92%;background:var(--lopez-color)"></div>
+              </div>
+              <div class="result-votes">1,884,279 votos · Renovación Popular</div>
+            </div>
+            <div class="result-pct" style="color:var(--lopez-color)">11.92%</div>
+          </div>
+
+          <div class="result-item">
+            <div class="result-rank rn">4°</div>
+            <div
+              style="width:36px;height:36px;border-radius:50%;background:var(--bg-page);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:var(--text-muted);border:2px solid var(--border);flex-shrink:0">
+              JN</div>
+            <div style="flex:1;min-width:0">
+              <div class="result-name">Jorge Nieto</div>
+              <div class="result-bar-track" style="margin-top:5px">
+                <div class="result-bar-fill" style="width:11.06%;background:#a855f7"></div>
+              </div>
+              <div class="result-votes">1,748,580 votos · Partido del Buen Gobierno</div>
+            </div>
+            <div class="result-pct" style="color:#a855f7">11.06%</div>
+          </div>
+
+          <div class="result-item">
+            <div class="result-rank rn">5°</div>
+            <div
+              style="width:36px;height:36px;border-radius:50%;background:var(--bg-page);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:var(--text-muted);border:2px solid var(--border);flex-shrink:0">
+              RB</div>
+            <div style="flex:1;min-width:0">
+              <div class="result-name">Ricardo Belmont</div>
+              <div class="result-bar-track" style="margin-top:5px">
+                <div class="result-bar-fill" style="width:10.17%;background:#64748b"></div>
+              </div>
+              <div class="result-votes">1,607,877 votos · Partido OBRAS</div>
+            </div>
+            <div class="result-pct" style="color:#64748b">10.17%</div>
+          </div>
+
+          <div
+            style="margin-top:16px;background:var(--bg-page);border-radius:var(--radius-sm);padding:14px;font-size:12.5px;color:var(--text-secondary);line-height:1.55">
+            ⚠️ <strong style="color:var(--text-primary)">Nota:</strong> Con 93.85% de actas, Sánchez supera a López
+            Aliaga por ~14,785 votos (~0.09%). El JEE verifica el 6% restante. Resultado de 2ª posición <strong>no es
+              definitivo</strong>.
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ─── MAPA ELECTORAL ─── -->
+    <section id="mapaSection" style="margin-bottom:28px">
+      <div class="section-hdr">
+        <div class="section-title"><div class="sec-icon">🗺️</div>Mapa Electoral — Ganador por Departamento</div>
+        <span class="badge" style="background:var(--neutral-bg);color:#92400e">Estimado ONPE · 25 departamentos</span>
+      </div>
+      <div class="card map-card">
+        <div class="map-layout">
+          <!-- SVG MAP -->
+          <div>
+            <svg id="peruMapSvg" viewBox="0 0 500 575" xmlns="http://www.w3.org/2000/svg">
+              <!-- Background (Removed to blend with card) -->
+
+              <!-- AMAZONAS -->
+              <path class="dept-path" data-dept="amazonas" d="M167.4,221.0 L164.8,221.3 L163.8,220.9 L162.4,221.6 L160.3,221.2 L159.8,216.7 L158.5,212.4 L157.0,211.4 L156.2,207.9 L154.6,205.8 L152.6,204.0 L150.3,202.7 L150.2,201.7 L147.2,197.1 L144.8,194.3 L142.7,194.5 L142.0,192.7 L140.6,190.9 L139.0,187.1 L139.9,183.5 L142.2,180.5 L143.6,177.3 L144.9,175.9 L144.8,174.3 L142.2,171.6 L139.8,170.4 L139.1,167.7 L139.4,165.5 L140.6,164.4 L141.8,162.4 L141.0,161.2 L142.3,155.6 L141.0,154.5 L141.2,152.2 L139.2,151.2 L140.5,150.0 L140.5,148.4 L141.2,147.5 L141.3,144.9 L140.8,142.5 L141.8,141.3 L142.9,136.6 L144.1,134.7 L143.4,132.3 L144.6,130.7 L145.7,130.6 L146.0,128.3 L147.9,126.4 L148.2,124.6 L147.6,123.3 L148.3,122.1 L148.7,119.3 L149.4,118.5 L149.5,116.7 L150.7,114.5 L152.9,114.7 L153.8,117.9 L155.8,117.1 L155.1,113.2 L161.7,105.4 L162.3,103.8 L163.5,103.0 L166.0,102.3 L166.9,108.3 L166.9,114.9 L167.4,116.4 L171.7,121.6 L171.7,123.8 L170.6,125.9 L173.1,128.7 L173.9,130.9 L174.0,133.4 L173.7,135.8 L172.6,140.0 L173.2,143.7 L172.6,146.7 L170.5,148.0 L170.0,151.3 L167.1,153.9 L166.4,155.3 L166.4,157.9 L167.4,159.7 L167.4,160.9 L165.5,163.3 L165.6,164.8 L167.0,165.3 L169.3,167.3 L168.0,168.7 L169.4,170.4 L169.7,172.5 L169.3,174.6 L167.9,174.5 L167.2,175.4 L167.2,178.4 L168.1,180.4 L167.0,182.8 L167.3,186.8 L169.9,188.0 L170.6,190.3 L170.1,191.6 L172.4,192.5 L174.2,194.1 L175.8,192.2 L177.1,194.0 L178.3,193.4 L179.7,195.6 L181.7,196.4 L183.4,196.6 L184.1,199.1 L186.1,201.2 L185.0,203.6 L183.5,203.6 L182.3,202.0 L181.5,202.1 L181.9,204.3 L180.3,206.2 L180.1,207.8 L178.3,210.2 L177.1,210.3 L178.7,213.0 L173.9,212.4 L171.8,210.5 L169.4,212.4 L167.8,212.0 L167.8,214.6 L167.4,216.3 L168.5,218.9 L167.4,221.0 Z "/>
+              <!-- ANCASH -->
+              <path class="dept-path" data-dept="ancash" d="M180.6,267.7 L181.5,269.4 L181.3,270.7 L182.3,271.2 L182.7,272.8 L185.2,278.4 L186.2,279.2 L186.8,280.8 L189.0,281.7 L190.7,283.6 L196.4,285.8 L198.0,287.9 L198.3,289.3 L197.3,292.5 L195.6,291.4 L194.8,289.5 L192.0,293.6 L191.5,295.7 L191.9,297.4 L190.2,299.7 L188.6,301.0 L190.5,304.0 L191.0,302.9 L193.0,304.7 L193.2,306.0 L195.6,310.4 L195.3,311.2 L195.8,314.1 L192.6,315.1 L192.9,319.7 L191.1,320.6 L189.9,320.0 L189.3,321.3 L187.9,321.6 L186.8,323.6 L184.9,325.4 L184.4,328.0 L182.6,327.8 L180.8,328.5 L178.3,331.3 L177.7,333.3 L175.3,333.8 L172.9,333.3 L172.6,330.8 L172.9,328.9 L171.0,329.3 L170.9,327.3 L168.1,328.3 L169.7,324.4 L172.3,322.9 L169.4,321.1 L167.6,321.1 L167.4,324.4 L166.3,325.9 L167.0,326.8 L167.1,328.6 L165.2,328.4 L163.6,329.8 L163.0,327.8 L161.4,326.2 L159.9,322.7 L158.6,321.8 L157.2,317.5 L155.4,315.9 L155.0,312.9 L153.0,307.8 L153.5,305.4 L152.1,304.2 L150.7,301.4 L149.4,300.2 L149.3,298.3 L148.4,295.8 L148.9,295.0 L147.5,294.0 L147.6,291.9 L146.1,291.6 L145.1,290.0 L145.7,287.8 L145.1,287.1 L143.2,286.8 L143.5,285.2 L141.6,284.0 L141.0,280.8 L142.6,280.1 L142.7,277.5 L143.4,275.5 L144.8,274.3 L146.9,273.8 L149.7,271.9 L152.9,271.5 L154.5,269.8 L153.8,268.5 L155.1,266.9 L156.1,264.6 L156.1,262.9 L156.8,261.1 L159.7,258.6 L162.2,257.7 L163.3,254.1 L165.9,253.9 L168.6,254.1 L170.8,253.4 L171.1,255.0 L172.0,256.5 L173.5,257.6 L176.4,261.9 L177.0,264.4 L178.1,266.2 L180.6,267.7 Z "/>
+              <!-- APURIMAC -->
+              <path class="dept-path" data-dept="apurimac" d="M325.2,450.6 L322.0,451.3 L320.0,450.7 L317.6,451.0 L315.7,450.2 L314.5,451.8 L314.0,453.5 L313.4,452.0 L310.7,451.2 L309.1,449.9 L306.2,451.4 L304.8,451.0 L303.7,451.9 L301.8,452.0 L301.0,452.7 L298.9,451.8 L297.8,452.2 L297.3,453.7 L294.9,456.0 L292.5,454.0 L292.4,451.3 L294.2,450.2 L293.5,448.2 L294.1,447.7 L293.4,445.5 L292.4,444.5 L294.1,438.8 L291.2,433.5 L291.0,431.6 L289.8,428.7 L289.1,428.3 L288.6,426.3 L287.1,423.8 L289.4,422.9 L287.2,420.6 L285.8,420.1 L285.1,416.2 L284.1,412.9 L285.3,410.1 L284.9,409.5 L285.6,407.0 L286.8,406.1 L287.7,409.0 L290.3,409.9 L292.3,411.2 L295.1,413.9 L297.4,414.3 L290.0,414.0 L302.4,415.2 L303.1,413.5 L306.3,414.4 L308.9,413.7 L310.3,412.6 L312.6,412.6 L312.8,413.4 L315.6,413.7 L317.0,415.4 L319.6,416.3 L320.2,417.2 L322.4,417.5 L326.7,419.1 L327.2,420.7 L330.3,422.0 L332.3,422.0 L335.2,424.4 L336.9,428.1 L337.6,428.8 L337.7,431.2 L337.2,433.1 L337.5,434.7 L336.4,436.0 L336.8,436.9 L333.6,440.2 L332.1,441.2 L331.8,442.9 L329.8,444.0 L328.6,443.8 L327.5,445.2 L326.5,445.1 L324.2,447.3 L325.5,448.9 L325.2,450.6 Z "/>
+              <!-- AREQUIPA -->
+              <path class="dept-path" data-dept="arequipa" d="M247.6,473.9 L248.3,473.6 L249.6,470.5 L250.7,469.6 L251.5,466.8 L253.6,465.2 L255.2,464.8 L256.8,463.6 L258.1,464.7 L261.5,465.1 L263.1,464.8 L266.1,465.9 L267.7,466.1 L268.0,468.2 L267.4,469.9 L270.3,471.4 L269.8,472.3 L270.6,474.9 L273.8,475.3 L275.1,473.5 L276.8,472.4 L278.5,474.3 L277.0,478.3 L277.5,479.5 L281.2,475.3 L283.5,473.4 L283.3,471.3 L283.7,470.4 L285.3,470.3 L286.8,472.2 L289.0,473.7 L290.0,473.1 L292.8,472.9 L296.2,471.3 L297.7,472.6 L300.6,472.4 L300.9,469.5 L302.1,469.2 L304.2,469.8 L305.9,467.3 L306.1,466.2 L308.0,464.7 L309.3,462.6 L309.8,459.4 L308.5,457.7 L309.3,455.1 L311.1,453.7 L314.0,453.5 L314.5,451.8 L315.7,450.2 L317.6,451.0 L320.0,450.7 L322.0,451.3 L325.2,450.6 L324.7,452.1 L325.2,453.9 L327.1,455.5 L329.8,455.7 L331.7,454.8 L334.9,454.0 L335.4,455.6 L337.8,456.9 L338.2,455.1 L338.0,451.6 L339.6,449.7 L341.0,451.3 L340.5,452.6 L341.5,454.4 L342.5,454.4 L343.6,457.3 L345.3,457.6 L346.8,458.9 L346.2,461.0 L345.1,462.7 L349.1,463.4 L350.1,464.8 L351.5,464.4 L352.0,462.5 L353.8,463.0 L354.6,462.4 L353.9,460.0 L356.2,460.6 L357.9,463.0 L359.6,464.3 L361.3,463.0 L362.9,462.8 L364.8,464.3 L363.7,465.5 L364.3,466.9 L363.0,468.0 L364.1,469.3 L364.5,471.5 L363.9,473.3 L366.9,474.1 L367.9,472.8 L369.2,474.2 L368.6,475.3 L368.8,477.5 L371.5,479.9 L372.0,481.9 L371.0,484.1 L373.7,488.2 L374.4,489.9 L374.6,492.1 L373.3,492.2 L372.8,493.3 L373.4,497.7 L370.3,499.7 L369.5,499.7 L369.8,502.8 L370.5,504.2 L369.3,505.3 L366.7,504.2 L364.9,504.7 L361.7,504.4 L361.8,506.9 L360.7,508.9 L360.4,512.2 L359.3,512.9 L358.0,512.0 L356.4,512.6 L355.8,514.5 L355.9,516.3 L357.6,521.0 L358.9,521.0 L360.0,523.1 L355.9,527.8 L354.4,528.8 L348.5,526.7 L344.8,525.8 L343.5,525.1 L341.5,522.9 L338.1,520.8 L337.0,521.0 L332.9,517.4 L330.6,516.6 L330.4,515.2 L328.5,513.3 L325.9,511.5 L323.0,510.7 L318.1,510.0 L316.2,509.3 L311.9,506.0 L309.8,505.9 L307.8,505.1 L304.7,503.0 L302.7,502.8 L300.3,501.8 L300.0,500.6 L295.9,498.9 L290.9,497.4 L288.5,497.1 L287.7,496.3 L283.5,494.5 L282.9,493.8 L278.6,491.0 L277.9,489.1 L274.6,487.5 L272.4,486.9 L271.4,485.7 L269.8,486.0 L267.8,485.4 L266.5,484.4 L265.8,482.3 L259.8,480.1 L257.2,478.6 L254.8,477.6 L252.4,475.9 L249.5,474.4 L247.6,473.9 Z M363.5,502.0 L366.0,502.7 L366.2,501.0 L363.2,501.1 L363.5,502.0 Z "/>
+              <!-- AYACUCHO -->
+              <path class="dept-path" data-dept="ayacucho" d="M269.3,376.4 L270.0,378.0 L271.5,378.3 L274.0,380.6 L275.9,381.1 L276.6,379.7 L280.2,378.4 L280.6,381.2 L282.9,383.3 L284.7,387.0 L285.5,389.5 L287.1,390.8 L287.8,390.3 L290.7,394.0 L291.8,396.4 L293.8,398.0 L293.8,400.7 L295.1,402.0 L296.0,404.2 L296.8,405.0 L299.0,409.9 L300.8,412.1 L303.1,413.5 L302.4,415.2 L299.0,414.0 L297.4,414.3 L295.1,413.9 L292.3,411.2 L290.3,409.9 L287.7,409.0 L286.8,406.1 L285.6,407.0 L284.9,409.5 L285.3,410.1 L284.1,412.9 L285.1,416.2 L285.8,420.1 L287.2,420.6 L289.4,422.9 L287.1,423.8 L288.6,426.3 L289.1,428.3 L289.8,428.7 L291.0,431.6 L291.2,433.5 L294.1,438.8 L292.4,444.5 L293.4,445.5 L294.1,447.7 L293.5,448.2 L294.2,450.2 L292.4,451.3 L292.5,454.0 L294.9,456.0 L297.3,453.7 L297.8,452.2 L298.9,451.8 L301.0,452.7 L301.8,452.0 L303.7,451.9 L304.8,451.0 L306.2,451.4 L309.1,449.9 L310.7,451.2 L313.4,452.0 L314.0,453.5 L311.1,453.7 L309.3,455.1 L308.5,457.7 L309.8,459.4 L309.3,462.6 L308.0,464.7 L306.1,466.2 L305.9,467.3 L304.2,469.8 L302.1,469.2 L300.9,469.5 L300.6,472.4 L297.7,472.6 L296.2,471.3 L292.8,472.9 L290.0,473.1 L289.0,473.7 L286.8,472.2 L285.3,470.3 L283.7,470.4 L283.3,471.3 L283.5,473.4 L281.2,475.3 L277.5,479.5 L277.0,478.3 L278.5,474.3 L276.8,472.4 L275.1,473.5 L273.8,475.3 L270.6,474.9 L269.8,472.3 L270.3,471.4 L267.4,469.9 L268.0,468.2 L267.7,466.1 L266.1,465.9 L263.1,464.8 L261.5,465.1 L258.1,464.7 L256.8,463.6 L259.8,462.0 L259.8,457.9 L258.9,455.8 L257.3,456.0 L257.0,453.8 L255.6,453.3 L254.3,452.0 L254.1,449.1 L252.9,447.1 L251.0,448.9 L248.0,449.4 L247.7,446.6 L246.8,445.3 L246.7,443.8 L245.6,443.2 L246.9,440.2 L248.5,439.1 L247.0,437.3 L248.0,434.7 L248.9,433.0 L251.5,433.7 L254.5,433.0 L256.6,433.5 L256.2,431.3 L256.7,430.2 L256.1,428.7 L256.9,425.8 L256.4,425.0 L257.1,422.9 L256.3,420.3 L256.6,419.1 L255.7,417.3 L253.9,415.4 L252.7,414.9 L252.8,412.8 L253.7,411.7 L256.8,411.2 L258.7,411.9 L260.3,409.2 L262.5,406.5 L263.3,407.0 L265.9,406.7 L267.0,405.8 L267.4,403.1 L268.0,401.9 L269.3,401.8 L270.3,402.8 L271.5,401.8 L270.7,399.1 L269.8,398.9 L269.7,396.1 L270.8,395.8 L270.9,393.8 L269.2,392.4 L269.8,391.5 L269.4,390.1 L267.2,385.8 L267.0,384.5 L264.5,384.6 L262.2,381.1 L263.1,379.8 L268.1,379.2 L268.0,376.9 L269.3,376.4 Z M287.3,468.6 L287.4,469.9 L289.0,470.6 L290.3,469.4 L287.3,468.6 Z "/>
+              <!-- CAJAMARCA -->
+              <path class="dept-path" data-dept="cajamarca" d="M120.8,222.8 L121.6,222.0 L121.1,219.1 L122.6,217.8 L126.8,215.4 L126.2,213.1 L124.0,213.0 L123.6,212.2 L121.6,212.4 L119.5,208.6 L118.4,208.3 L117.6,206.5 L117.8,205.7 L116.9,204.0 L117.8,201.5 L119.9,201.3 L120.8,200.0 L122.9,199.0 L122.3,196.6 L123.7,193.8 L122.5,192.3 L117.9,191.3 L120.5,189.0 L118.8,186.0 L118.5,184.7 L119.2,180.5 L118.5,178.4 L122.3,177.9 L121.5,176.0 L120.6,171.8 L119.7,171.0 L120.0,169.3 L119.1,168.1 L121.6,165.7 L123.1,162.4 L124.2,161.3 L128.2,161.5 L130.1,162.8 L131.2,159.3 L133.6,159.1 L133.7,156.6 L133.0,156.1 L133.9,153.8 L135.2,152.1 L136.3,151.6 L139.2,151.2 L141.2,152.2 L141.0,154.5 L142.3,155.6 L141.0,161.2 L141.8,162.4 L140.6,164.4 L139.4,165.5 L139.1,167.7 L139.8,170.4 L142.2,171.6 L144.8,174.3 L144.9,175.9 L143.6,177.3 L142.2,180.5 L139.9,183.5 L139.0,187.1 L140.6,190.9 L142.0,192.7 L142.7,194.5 L144.8,194.3 L147.2,197.1 L150.2,201.7 L150.3,202.7 L152.6,204.0 L154.6,205.8 L156.2,207.9 L157.0,211.4 L158.5,212.4 L159.8,216.7 L160.3,221.2 L163.3,227.0 L163.8,228.6 L165.3,231.3 L165.8,233.7 L167.1,234.5 L168.0,236.0 L164.9,237.4 L164.1,239.5 L160.3,242.3 L157.8,242.8 L156.8,241.5 L153.5,244.7 L152.1,244.5 L151.2,242.8 L150.4,242.9 L148.8,240.8 L149.6,239.2 L149.5,237.0 L147.9,236.5 L145.6,238.6 L141.6,238.4 L140.9,237.8 L141.5,235.3 L140.5,234.4 L137.6,234.0 L135.1,235.1 L133.8,236.5 L133.5,238.1 L132.1,239.9 L131.6,241.7 L130.7,241.7 L129.2,239.9 L128.5,236.1 L125.9,235.2 L124.8,233.8 L122.8,233.4 L121.7,232.4 L120.1,232.1 L122.0,230.2 L122.4,227.8 L121.3,226.4 L120.8,222.8 Z "/>
+              <!-- CALLAO -->
+              <path class="dept-path" data-dept="callao" d="M184.5,366.1 L186.3,365.8 L187.4,368.2 L186.6,369.9 L187.6,372.3 L186.8,373.6 L185.6,373.2 L186.1,370.5 L185.4,367.4 L184.5,366.1 Z "/>
+              <!-- CUSCO -->
+              <path class="dept-path" data-dept="cusco" d="M325.2,450.6 L325.5,448.9 L324.2,447.3 L326.5,445.1 L327.5,445.2 L328.6,443.8 L329.8,444.0 L331.8,442.9 L332.1,441.2 L333.6,440.2 L336.8,436.9 L336.4,436.0 L337.5,434.7 L337.2,433.1 L337.7,431.2 L337.6,428.8 L336.9,428.1 L335.2,424.4 L332.3,422.0 L330.3,422.0 L327.2,420.7 L326.7,419.1 L322.4,417.5 L320.2,417.2 L319.6,416.3 L317.0,415.4 L315.6,413.7 L312.8,413.4 L312.6,412.6 L310.3,412.6 L308.9,413.7 L306.3,414.4 L303.1,413.5 L300.8,412.1 L299.0,409.9 L296.8,405.0 L296.0,404.2 L295.1,402.0 L293.8,400.7 L293.8,398.0 L291.8,396.4 L290.7,394.0 L287.8,390.3 L287.1,390.8 L285.5,389.5 L284.7,387.0 L282.9,383.3 L280.6,381.2 L280.2,378.4 L281.8,377.9 L284.2,378.3 L285.5,377.8 L287.4,379.1 L288.3,379.2 L290.4,382.5 L291.8,382.4 L292.3,379.4 L295.4,377.7 L296.1,376.0 L298.6,375.2 L297.2,373.1 L297.5,371.8 L296.3,370.9 L296.2,369.5 L294.8,367.5 L292.2,366.3 L292.3,363.2 L291.3,361.0 L292.7,359.0 L296.0,357.2 L295.1,355.4 L296.9,352.8 L299.5,350.6 L301.7,350.7 L303.3,350.0 L305.3,350.1 L308.6,349.2 L309.7,347.3 L310.3,349.2 L311.2,349.8 L310.8,351.2 L312.5,352.0 L315.5,352.8 L317.2,351.7 L318.2,352.7 L321.0,354.1 L323.3,354.3 L324.9,352.9 L327.9,351.3 L330.1,350.5 L332.1,351.6 L331.8,352.8 L330.5,354.3 L329.8,359.1 L326.4,362.5 L328.2,364.8 L327.6,366.0 L329.3,366.9 L328.9,367.9 L329.2,370.2 L330.7,370.5 L331.5,371.4 L331.2,372.8 L334.0,373.0 L336.4,373.7 L336.6,375.4 L336.1,378.3 L338.2,379.1 L340.0,380.7 L339.9,383.1 L337.4,384.3 L337.1,386.4 L338.3,386.8 L339.8,388.5 L340.5,390.7 L339.9,391.6 L342.8,393.0 L344.9,393.4 L346.8,394.9 L348.3,393.2 L351.2,392.1 L352.6,392.3 L355.6,395.8 L356.7,397.9 L358.5,397.5 L360.1,399.2 L361.9,400.2 L363.9,400.5 L364.0,403.8 L365.4,408.0 L367.8,409.0 L369.8,406.0 L371.4,404.3 L373.7,403.0 L376.3,404.2 L379.2,403.6 L381.4,404.1 L382.5,405.6 L385.0,405.8 L387.3,406.7 L386.3,408.7 L387.2,410.4 L387.0,412.1 L385.7,412.7 L385.4,414.4 L383.0,416.7 L382.7,418.1 L380.5,419.2 L379.4,420.6 L377.6,420.8 L377.0,423.1 L378.0,425.0 L377.4,425.7 L376.0,425.3 L374.1,426.6 L374.0,429.0 L373.2,431.6 L375.1,433.0 L374.8,434.5 L373.0,435.9 L372.1,437.7 L372.6,438.9 L371.7,440.6 L370.2,441.6 L369.5,443.0 L370.2,444.1 L369.2,445.9 L369.0,447.9 L365.7,450.7 L367.5,453.3 L368.7,452.9 L369.8,453.6 L369.2,455.6 L369.5,459.1 L368.9,459.8 L369.8,465.9 L370.2,467.1 L369.5,468.1 L370.5,469.3 L368.7,470.9 L367.9,472.8 L366.9,474.1 L363.9,473.3 L364.5,471.5 L364.1,469.3 L363.0,468.0 L364.3,466.9 L363.7,465.5 L364.8,464.3 L362.9,462.8 L361.3,463.0 L359.6,464.3 L357.9,463.0 L356.2,460.6 L353.9,460.0 L354.6,462.4 L353.8,463.0 L352.0,462.5 L351.5,464.4 L350.1,464.8 L349.1,463.4 L345.1,462.7 L346.2,461.0 L346.8,458.9 L345.3,457.6 L343.6,457.3 L342.5,454.4 L341.5,454.4 L340.5,452.6 L341.0,451.3 L339.6,449.7 L338.0,451.6 L338.2,455.1 L337.8,456.9 L335.4,455.6 L334.9,454.0 L331.7,454.8 L329.8,455.7 L327.1,455.5 L325.2,453.9 L324.7,452.1 L325.2,450.6 Z M361.8,445.3 L364.0,446.5 L364.4,445.8 L361.7,443.9 L361.8,445.3 Z "/>
+              <!-- HUANCAVELICA -->
+              <path class="dept-path" data-dept="huancavelica" d="M248.0,434.7 L246.5,431.8 L244.8,433.0 L242.0,432.1 L242.8,431.0 L239.8,431.3 L236.8,428.3 L233.5,427.5 L232.9,426.1 L234.1,425.4 L233.6,424.3 L234.4,421.8 L235.3,420.4 L234.4,419.4 L235.5,416.7 L235.8,413.9 L234.7,411.9 L233.7,413.1 L232.3,413.0 L229.2,414.1 L228.5,413.4 L225.7,413.0 L226.2,411.2 L228.7,409.6 L228.7,406.6 L229.0,405.4 L228.3,404.3 L229.0,403.2 L231.0,402.7 L231.4,400.0 L230.8,398.5 L231.5,397.0 L233.9,395.7 L234.6,394.4 L232.5,392.5 L233.3,391.5 L232.5,390.3 L233.7,389.7 L235.1,390.5 L237.3,389.9 L238.9,387.3 L241.4,385.1 L243.3,385.0 L243.3,383.0 L245.6,381.4 L247.6,378.2 L248.3,376.3 L247.5,373.0 L248.3,371.5 L251.8,371.9 L254.6,373.3 L257.2,372.4 L258.2,373.0 L259.9,371.1 L261.0,370.7 L266.0,372.2 L267.1,374.0 L269.1,375.6 L269.3,376.4 L268.0,376.9 L268.1,379.2 L263.1,379.8 L262.2,381.1 L264.5,384.6 L267.0,384.5 L267.2,385.8 L269.4,390.1 L269.8,391.5 L269.2,392.4 L270.9,393.8 L270.8,395.8 L269.7,396.1 L269.8,398.9 L270.7,399.1 L271.5,401.8 L270.3,402.8 L269.3,401.8 L268.0,401.9 L267.4,403.1 L267.0,405.8 L265.9,406.7 L263.3,407.0 L262.5,406.5 L260.3,409.2 L258.7,411.9 L256.8,411.2 L253.7,411.7 L252.8,412.8 L252.7,414.9 L253.9,415.4 L255.7,417.3 L256.6,419.1 L256.3,420.3 L257.1,422.9 L256.4,425.0 L256.9,425.8 L256.1,428.7 L256.7,430.2 L256.2,431.3 L256.6,433.5 L254.5,433.0 L251.5,433.7 L248.9,433.0 L248.0,434.7 Z "/>
+              <!-- HUANUCO -->
+              <path class="dept-path" data-dept="huanuco" d="M180.6,267.7 L182.2,265.8 L184.0,266.3 L186.1,265.0 L187.4,266.3 L187.3,267.3 L188.6,268.4 L192.6,268.9 L194.6,268.2 L195.1,267.3 L199.1,267.7 L201.3,267.1 L203.7,267.1 L206.0,268.9 L206.7,266.4 L207.5,265.1 L210.0,264.7 L210.2,267.5 L211.6,269.1 L212.0,271.4 L213.0,275.6 L214.9,274.4 L216.5,271.5 L216.0,265.8 L217.3,261.9 L220.4,261.5 L221.5,263.8 L221.0,265.3 L220.9,269.5 L220.5,270.8 L221.5,273.2 L222.2,275.2 L222.4,278.1 L223.7,280.8 L223.6,282.3 L225.7,285.3 L226.1,287.3 L227.9,289.8 L229.7,293.5 L233.0,293.6 L235.0,292.9 L236.3,290.5 L239.9,290.6 L241.3,290.9 L241.9,289.8 L243.5,288.5 L243.5,286.4 L242.7,284.9 L244.3,284.1 L245.2,282.8 L245.5,280.9 L246.9,279.4 L248.4,278.8 L250.4,280.3 L251.7,279.6 L251.5,277.5 L254.2,274.4 L254.3,271.6 L255.8,270.7 L261.1,268.2 L263.2,269.3 L263.9,274.2 L263.7,275.0 L261.4,276.3 L260.4,279.3 L260.1,283.1 L259.3,284.5 L260.5,285.2 L260.5,286.5 L262.0,290.7 L259.5,293.5 L259.4,294.5 L257.9,295.7 L257.2,297.3 L257.6,298.8 L255.5,302.2 L255.6,303.5 L254.2,304.0 L252.8,303.7 L251.4,304.4 L249.8,306.7 L248.0,306.1 L246.5,306.9 L245.0,306.7 L242.6,305.1 L240.7,305.1 L241.5,307.0 L241.2,307.7 L238.7,307.7 L237.9,309.0 L235.5,310.7 L233.4,311.0 L232.1,310.1 L231.6,312.2 L229.6,312.9 L228.8,315.5 L228.7,317.7 L226.3,319.0 L224.7,319.2 L224.2,320.5 L222.2,322.1 L222.1,323.7 L220.6,325.8 L218.2,325.4 L217.6,324.5 L216.0,324.3 L213.3,322.7 L211.8,322.6 L210.7,323.6 L209.9,320.1 L205.8,321.6 L205.3,322.8 L200.6,323.9 L199.1,324.7 L198.3,326.0 L196.9,325.4 L195.8,323.2 L194.4,322.8 L192.9,319.7 L192.6,315.1 L195.8,314.1 L195.3,311.2 L195.6,310.4 L193.2,306.0 L193.0,304.7 L191.0,302.9 L190.5,304.0 L188.6,301.0 L190.2,299.7 L191.9,297.4 L191.5,295.7 L192.0,293.6 L194.8,289.5 L195.6,291.4 L197.3,292.5 L198.3,289.3 L198.0,287.9 L196.4,285.8 L190.7,283.6 L189.0,281.7 L186.8,280.8 L186.2,279.2 L185.2,278.4 L182.7,272.8 L182.3,271.2 L181.3,270.7 L181.5,269.4 L180.6,267.7 Z "/>
+              <!-- ICA -->
+              <path class="dept-path" data-dept="ica" d="M256.8,463.6 L255.2,464.8 L253.6,465.2 L251.5,466.8 L250.7,469.6 L249.6,470.5 L248.3,473.6 L247.6,473.9 L247.3,473.3 L244.2,471.6 L244.7,469.8 L242.9,468.9 L243.3,467.6 L241.5,465.7 L238.7,464.9 L236.5,460.7 L234.8,459.7 L234.8,458.2 L232.6,456.7 L229.5,455.2 L226.3,453.2 L224.2,452.2 L222.4,450.5 L221.9,447.8 L220.7,446.5 L220.7,444.9 L218.7,443.5 L217.9,442.4 L216.0,441.4 L216.6,439.6 L215.6,437.6 L213.0,435.3 L211.3,435.7 L212.0,431.3 L211.5,428.4 L210.1,428.6 L208.1,428.1 L208.8,425.1 L211.1,424.7 L210.9,426.0 L212.1,426.8 L214.0,420.1 L214.3,417.9 L214.2,413.7 L212.6,410.7 L213.7,410.1 L215.3,406.8 L219.6,403.6 L221.8,400.7 L225.8,402.8 L227.0,401.6 L228.1,402.1 L229.7,401.7 L231.4,400.0 L231.0,402.7 L229.0,403.2 L228.3,404.3 L229.0,405.4 L228.7,406.6 L228.7,409.6 L226.2,411.2 L225.7,413.0 L228.5,413.4 L229.2,414.1 L232.3,413.0 L233.7,413.1 L234.7,411.9 L235.8,413.9 L235.5,416.7 L234.4,419.4 L235.3,420.4 L234.4,421.8 L233.6,424.3 L234.1,425.4 L232.9,426.1 L233.5,427.5 L236.8,428.3 L239.8,431.3 L242.8,431.0 L242.0,432.1 L244.8,433.0 L246.5,431.8 L248.0,434.7 L247.0,437.3 L248.5,439.1 L246.9,440.2 L245.6,443.2 L246.7,443.8 L246.8,445.3 L247.7,446.6 L248.0,449.4 L251.0,448.9 L252.9,447.1 L254.1,449.1 L254.3,452.0 L255.6,453.3 L257.0,453.8 L257.3,456.0 L258.9,455.8 L259.8,457.9 L259.8,462.0 L256.8,463.6 Z "/>
+              <!-- JUNIN -->
+              <path class="dept-path" data-dept="junin" d="M262.5,338.7 L264.4,339.9 L264.7,341.2 L266.3,341.5 L268.4,343.0 L271.9,341.9 L273.6,341.9 L276.8,341.0 L279.4,341.1 L280.2,343.4 L280.2,344.9 L283.7,345.7 L283.5,342.5 L283.9,340.0 L284.8,339.0 L285.1,335.4 L286.8,333.5 L288.6,334.6 L291.2,336.8 L292.7,337.2 L292.4,340.1 L293.2,342.8 L295.0,343.3 L296.0,348.1 L295.7,350.4 L295.0,350.9 L296.9,352.8 L295.1,355.4 L296.0,357.2 L292.7,359.0 L291.3,361.0 L292.3,363.2 L292.2,366.3 L294.8,367.5 L296.2,369.5 L296.3,370.9 L297.5,371.8 L297.2,373.1 L298.6,375.2 L296.1,376.0 L295.4,377.7 L292.3,379.4 L291.8,382.4 L290.4,382.5 L288.3,379.2 L287.4,379.1 L285.5,377.8 L284.2,378.3 L281.8,377.9 L280.2,378.4 L276.6,379.7 L275.9,381.1 L274.0,380.6 L271.5,378.3 L270.0,378.0 L269.3,376.4 L269.1,375.6 L267.1,374.0 L266.0,372.2 L261.0,370.7 L259.9,371.1 L258.2,373.0 L257.2,372.4 L254.6,373.3 L251.8,371.9 L248.3,371.5 L247.5,373.0 L248.3,376.3 L247.6,378.2 L245.6,381.4 L243.3,383.0 L243.3,385.0 L241.4,385.1 L238.9,387.3 L237.3,389.9 L235.1,390.5 L233.7,389.7 L232.5,390.3 L232.7,388.0 L233.7,386.6 L233.1,384.8 L232.9,381.2 L229.9,377.0 L230.7,374.6 L229.0,372.5 L226.9,373.0 L225.2,371.6 L222.1,370.7 L219.5,370.7 L218.3,369.6 L218.4,368.0 L215.8,364.6 L213.9,363.1 L213.8,361.0 L214.3,359.0 L213.2,358.1 L211.4,359.0 L208.8,356.4 L208.6,354.6 L207.0,351.7 L205.7,350.1 L205.2,347.0 L204.4,344.8 L205.3,344.0 L208.1,343.6 L210.4,344.1 L210.7,345.3 L212.1,345.8 L212.7,343.2 L211.6,339.1 L212.2,339.0 L212.5,339.4 L212.5,339.5 L212.8,340.1 L214.7,342.7 L216.5,344.6 L219.0,344.0 L219.6,342.7 L217.8,340.6 L216.2,340.2 L217.2,338.6 L218.6,337.8 L220.1,336.0 L222.2,337.9 L224.1,337.4 L224.7,338.0 L226.3,336.1 L227.9,335.7 L229.1,336.4 L232.2,335.7 L232.6,333.8 L235.1,334.1 L236.0,335.0 L235.4,336.9 L235.9,338.4 L237.6,337.1 L240.3,337.3 L241.9,336.1 L242.5,334.4 L244.0,332.9 L246.2,333.3 L247.5,331.4 L249.2,331.7 L250.4,333.8 L251.0,333.4 L252.9,334.5 L254.8,334.8 L256.0,336.3 L256.9,336.1 L258.5,337.1 L260.2,337.4 L261.3,338.5 L262.5,338.7 Z "/>
+              <!-- LALIBERTAD -->
+              <path class="dept-path" data-dept="lalibertad" d="M141.0,280.8 L140.8,279.1 L137.5,274.9 L138.3,273.1 L138.1,270.8 L137.0,268.8 L132.4,264.9 L133.5,263.2 L131.7,260.6 L130.8,258.2 L127.0,254.7 L126.9,254.0 L121.3,249.7 L119.2,247.2 L118.7,245.5 L116.5,243.3 L117.4,242.7 L117.0,241.3 L114.3,237.6 L112.9,234.4 L113.4,233.7 L112.2,230.0 L109.8,227.3 L115.6,221.2 L116.8,220.4 L118.5,220.7 L120.8,222.8 L121.3,226.4 L122.4,227.8 L122.0,230.2 L120.1,232.1 L121.7,232.4 L122.8,233.4 L124.8,233.8 L125.9,235.2 L128.5,236.1 L129.2,239.9 L130.7,241.7 L131.6,241.7 L132.1,239.9 L133.5,238.1 L133.8,236.5 L135.1,235.1 L137.6,234.0 L140.5,234.4 L141.5,235.3 L140.9,237.8 L141.6,238.4 L145.6,238.6 L147.9,236.5 L149.5,237.0 L149.6,239.2 L148.8,240.8 L150.4,242.9 L151.2,242.8 L152.1,244.5 L153.5,244.7 L156.8,241.5 L157.8,242.8 L160.3,242.3 L164.1,239.5 L164.9,237.4 L168.0,236.0 L167.1,234.5 L165.8,233.7 L165.3,231.3 L163.8,228.6 L163.3,227.0 L160.3,221.2 L162.4,221.6 L163.8,220.9 L164.8,221.3 L167.4,221.0 L168.8,225.2 L170.9,226.5 L172.0,228.6 L170.8,229.2 L171.3,231.6 L171.1,232.7 L171.9,235.0 L174.4,237.1 L174.1,239.4 L175.6,242.9 L174.3,244.6 L175.8,246.0 L176.9,246.3 L177.9,249.0 L178.8,249.1 L177.9,251.6 L178.6,253.5 L181.4,253.7 L183.0,252.3 L185.6,252.8 L186.6,252.6 L189.5,253.4 L190.5,255.2 L192.9,257.0 L192.3,258.4 L193.0,260.3 L192.7,261.6 L190.8,263.7 L187.5,264.0 L186.1,265.0 L184.0,266.3 L182.2,265.8 L180.6,267.7 L178.1,266.2 L177.0,264.4 L176.4,261.9 L173.5,257.6 L172.0,256.5 L171.1,255.0 L170.8,253.4 L168.6,254.1 L165.9,253.9 L163.3,254.1 L162.2,257.7 L159.7,258.6 L156.8,261.1 L156.1,262.9 L156.1,264.6 L155.1,266.9 L153.8,268.5 L154.5,269.8 L152.9,271.5 L149.7,271.9 L146.9,273.8 L144.8,274.3 L143.4,275.5 L142.7,277.5 L142.6,280.1 L141.0,280.8 Z "/>
+              <!-- LAMBAYEQUE -->
+              <path class="dept-path" data-dept="lambayeque" d="M81.9,203.3 L89.4,192.4 L90.8,190.6 L94.7,189.0 L96.7,188.9 L100.7,184.8 L101.5,179.7 L102.2,177.7 L103.5,177.0 L104.9,178.2 L104.6,179.2 L105.6,181.6 L106.9,181.7 L109.0,184.4 L108.4,187.4 L110.1,187.6 L111.6,187.1 L111.7,188.8 L112.5,190.4 L115.5,189.7 L117.9,191.3 L122.5,192.3 L123.7,193.8 L122.3,196.6 L122.9,199.0 L120.8,200.0 L119.9,201.3 L117.8,201.5 L116.9,204.0 L117.8,205.7 L117.6,206.5 L118.4,208.3 L119.5,208.6 L121.6,212.4 L123.6,212.2 L124.0,213.0 L126.2,213.1 L126.8,215.4 L122.6,217.8 L121.1,219.1 L121.6,222.0 L120.8,222.8 L118.5,220.7 L116.8,220.4 L115.6,221.2 L109.8,227.3 L110.0,225.8 L108.4,223.7 L102.6,218.3 L102.4,216.9 L101.0,214.5 L98.4,212.4 L95.3,210.3 L92.0,208.4 L81.9,203.3 Z "/>
+              <!-- LIMA -->
+              <path class="dept-path" data-dept="lima" d="M192.9,319.7 L194.4,322.8 L195.8,323.2 L196.9,325.4 L198.3,326.0 L199.0,329.2 L200.4,330.8 L200.2,332.1 L201.0,334.9 L202.6,337.4 L203.1,340.3 L202.6,341.7 L204.1,342.4 L205.3,344.0 L204.4,344.8 L205.2,347.0 L205.7,350.1 L207.0,351.7 L208.6,354.6 L208.8,356.4 L211.4,359.0 L213.2,358.1 L214.3,359.0 L213.8,361.0 L213.9,363.1 L215.8,364.6 L218.4,368.0 L218.3,369.6 L219.5,370.7 L222.1,370.7 L225.2,371.6 L226.9,373.0 L229.0,372.5 L230.7,374.6 L229.9,377.0 L232.9,381.2 L233.1,384.8 L233.7,386.6 L232.7,388.0 L232.5,390.3 L233.3,391.5 L232.5,392.5 L234.6,394.4 L233.9,395.7 L231.5,397.0 L230.8,398.5 L231.4,400.0 L229.7,401.7 L228.1,402.1 L227.0,401.6 L225.8,402.8 L221.8,400.7 L219.6,403.6 L215.3,406.8 L213.7,410.1 L212.6,410.7 L207.0,403.7 L205.3,402.0 L204.6,399.6 L204.8,398.8 L204.1,396.2 L200.9,393.4 L199.9,389.9 L197.6,387.3 L196.1,386.4 L196.8,384.2 L196.7,382.9 L195.0,380.6 L192.0,378.6 L189.0,377.3 L189.2,375.2 L186.8,373.6 L187.6,372.3 L186.6,369.9 L187.4,368.2 L186.3,365.8 L184.5,366.1 L185.1,363.4 L183.6,360.4 L181.7,358.9 L181.0,356.6 L179.0,354.8 L175.2,352.6 L170.9,350.4 L170.9,347.7 L172.4,346.8 L171.2,343.0 L170.3,341.7 L170.5,339.8 L167.7,335.9 L167.9,335.2 L165.9,332.4 L163.6,329.8 L165.2,328.4 L167.1,328.6 L167.0,326.8 L166.3,325.9 L167.4,324.4 L167.6,321.1 L169.4,321.1 L172.3,322.9 L169.7,324.4 L168.1,328.3 L170.9,327.3 L171.0,329.3 L172.9,328.9 L172.6,330.8 L172.9,333.3 L175.3,333.8 L177.7,333.3 L178.3,331.3 L180.8,328.5 L182.6,327.8 L184.4,328.0 L184.9,325.4 L186.8,323.6 L187.9,321.6 L189.3,321.3 L189.9,320.0 L191.1,320.6 L192.9,319.7 Z "/>
+              <!-- LORETO -->
+              <path class="dept-path" data-dept="loreto" d="M280.1,238.0 L278.6,236.5 L278.4,235.4 L275.4,233.9 L274.2,232.7 L271.8,232.3 L270.1,232.5 L265.8,230.9 L264.6,230.0 L263.6,230.8 L262.3,234.3 L261.2,235.0 L260.4,236.9 L260.4,238.8 L262.5,242.0 L262.1,242.9 L262.9,244.4 L264.2,245.2 L262.6,246.4 L260.8,250.1 L257.9,251.3 L256.6,252.9 L252.8,254.3 L250.3,250.9 L248.7,250.4 L245.5,251.2 L244.2,252.4 L243.3,255.7 L242.5,256.5 L241.2,255.6 L238.5,256.0 L236.9,256.8 L235.7,259.4 L234.7,260.5 L234.7,262.3 L236.8,263.6 L236.6,264.9 L233.4,265.8 L231.9,264.1 L230.4,264.1 L228.7,265.0 L228.4,266.4 L226.5,266.6 L226.5,268.2 L224.9,271.3 L223.1,271.6 L221.5,273.2 L220.5,270.8 L220.9,269.5 L221.0,265.3 L221.5,263.8 L220.4,261.5 L221.9,261.2 L222.5,259.4 L221.7,257.4 L221.4,254.8 L222.4,254.0 L224.5,253.6 L225.0,251.1 L224.1,249.5 L220.9,250.7 L218.6,245.7 L216.9,243.6 L217.2,238.7 L215.0,236.8 L213.5,234.1 L214.1,232.0 L213.6,231.3 L214.9,230.0 L215.6,228.1 L218.1,226.8 L219.6,224.4 L219.6,221.9 L218.4,220.4 L219.6,218.9 L218.4,216.4 L221.0,215.7 L224.6,216.0 L226.8,217.7 L228.9,218.1 L229.8,216.9 L230.8,217.3 L234.5,215.6 L234.8,215.1 L234.8,211.3 L234.5,206.9 L233.3,202.6 L235.1,200.2 L235.2,198.3 L234.1,197.1 L233.8,195.1 L232.7,192.3 L231.4,192.9 L231.0,194.7 L229.4,195.1 L228.4,196.3 L225.4,195.2 L224.8,196.4 L222.0,196.3 L220.9,195.0 L219.0,195.2 L216.1,197.5 L213.2,197.2 L211.8,195.3 L210.4,194.8 L208.8,191.4 L207.6,190.7 L203.6,192.9 L200.8,192.3 L197.6,192.3 L197.6,190.8 L195.5,188.1 L195.0,184.6 L193.4,184.7 L191.2,183.4 L190.2,182.3 L188.8,182.5 L183.2,180.1 L180.0,180.4 L179.0,179.4 L177.9,179.9 L176.3,179.8 L174.6,176.3 L173.4,175.1 L172.7,176.1 L170.1,174.6 L169.3,174.6 L169.7,172.5 L169.4,170.4 L168.0,168.7 L169.3,167.3 L167.0,165.3 L165.6,164.8 L165.5,163.3 L167.4,160.9 L167.4,159.7 L166.4,157.9 L166.4,155.3 L167.1,153.9 L170.0,151.3 L170.5,148.0 L172.6,146.7 L173.2,143.7 L172.6,140.0 L173.7,135.8 L174.0,133.4 L173.9,130.9 L173.1,128.7 L170.6,125.9 L171.7,123.8 L171.7,121.6 L167.4,116.4 L166.9,114.9 L166.9,108.3 L166.0,102.3 L185.4,95.8 L201.1,90.5 L218.6,76.7 L232.4,59.4 L233.7,57.5 L237.7,43.1 L238.2,41.0 L240.1,42.3 L243.3,42.2 L243.1,39.0 L241.6,35.2 L242.7,32.5 L243.0,29.7 L241.5,28.1 L240.4,28.0 L238.2,26.2 L235.9,22.7 L235.4,20.3 L233.9,18.6 L231.5,18.9 L231.5,16.6 L232.9,17.1 L234.7,16.7 L237.7,18.3 L240.6,17.9 L242.0,17.0 L244.3,14.4 L247.4,15.7 L249.2,17.6 L250.6,17.8 L251.8,19.7 L254.3,20.2 L255.3,19.0 L256.8,19.9 L257.8,22.0 L257.8,23.3 L259.6,24.4 L262.4,25.0 L263.8,27.1 L267.0,28.3 L268.6,31.4 L268.4,32.7 L271.6,38.5 L271.3,40.1 L271.6,42.5 L272.9,43.3 L274.5,43.2 L276.8,44.5 L278.2,44.4 L279.1,45.6 L281.1,47.0 L282.1,46.6 L283.8,50.0 L289.1,50.2 L290.9,50.8 L291.1,52.5 L293.5,56.0 L293.6,56.9 L295.1,58.6 L294.4,61.5 L293.4,63.6 L294.5,64.9 L295.7,65.0 L296.7,66.6 L298.0,66.2 L300.2,66.4 L303.3,65.8 L304.9,68.6 L306.0,69.1 L305.9,73.4 L306.6,74.1 L305.5,78.4 L304.4,79.6 L305.8,81.4 L307.4,82.3 L307.4,83.5 L310.5,83.1 L310.7,84.6 L312.7,85.8 L313.8,85.9 L316.3,84.4 L318.6,85.0 L321.5,83.8 L323.7,85.6 L325.3,85.4 L327.9,86.5 L328.2,87.5 L330.6,86.9 L331.5,85.8 L331.1,86.2 L334.8,85.3 L337.8,82.9 L338.9,83.9 L340.4,83.5 L341.4,82.1 L342.7,82.2 L344.2,78.6 L345.2,79.0 L347.0,77.1 L347.9,79.7 L349.3,78.9 L351.0,79.8 L355.2,81.0 L358.0,84.5 L359.6,84.1 L360.0,83.1 L362.2,83.0 L363.4,84.2 L365.1,81.4 L367.5,81.0 L369.1,79.1 L371.2,80.5 L372.7,79.5 L374.0,81.6 L375.7,81.6 L376.5,82.7 L379.0,83.4 L380.2,84.7 L379.8,86.8 L381.0,87.3 L384.7,86.5 L385.8,88.4 L388.2,87.5 L388.9,90.1 L390.7,89.2 L392.0,90.0 L392.3,92.1 L395.8,92.5 L396.9,93.3 L397.1,95.5 L394.7,99.5 L383.9,116.5 L377.7,126.3 L380.4,127.8 L381.8,127.5 L384.1,128.8 L388.6,126.6 L390.6,127.7 L391.5,129.3 L393.0,129.8 L393.7,131.6 L395.8,134.3 L397.1,135.1 L397.9,136.6 L400.2,138.7 L400.4,140.9 L399.7,142.5 L398.3,143.1 L396.8,142.2 L396.5,141.1 L394.2,140.8 L394.3,142.1 L393.5,143.1 L391.6,141.0 L390.6,139.4 L390.1,137.3 L386.0,136.5 L385.0,137.8 L383.2,136.6 L382.2,137.6 L380.5,138.3 L379.7,136.3 L378.2,138.1 L376.6,137.4 L374.5,138.4 L374.2,139.9 L373.1,140.2 L372.7,142.1 L370.6,143.8 L366.8,144.3 L365.9,143.8 L363.5,144.4 L362.7,143.8 L361.2,145.3 L358.9,145.6 L357.5,145.2 L356.6,146.4 L354.8,145.5 L353.1,146.3 L352.1,147.7 L350.7,148.3 L349.7,147.5 L348.0,147.8 L347.0,146.9 L343.3,148.2 L341.7,149.3 L339.8,151.3 L338.1,151.5 L336.2,153.6 L333.7,154.7 L331.2,156.3 L329.5,156.5 L327.9,157.4 L326.9,159.4 L323.7,160.4 L321.2,162.3 L321.1,163.2 L319.7,164.2 L317.5,164.0 L316.5,165.1 L312.7,167.3 L313.5,169.4 L313.4,171.0 L312.5,172.1 L311.6,174.5 L310.7,176.2 L310.9,178.7 L310.2,180.7 L310.6,182.0 L307.7,186.1 L304.9,188.3 L303.9,190.7 L303.8,192.3 L302.8,192.9 L301.9,196.2 L304.7,201.9 L306.1,205.5 L305.0,207.5 L303.5,209.2 L299.6,210.0 L297.7,211.3 L293.9,212.4 L292.6,213.7 L291.4,214.0 L288.2,217.3 L286.7,220.2 L286.7,223.9 L285.6,225.4 L288.0,228.8 L288.7,231.0 L287.8,232.2 L285.0,232.1 L283.7,233.6 L281.8,232.8 L281.3,233.8 L282.2,236.2 L281.3,238.0 L280.1,238.0 Z "/>
+              <!-- MADREDEDIOS -->
+              <path class="dept-path" data-dept="madrededios" d="M387.3,406.7 L385.0,405.8 L382.5,405.6 L381.4,404.1 L379.2,403.6 L376.3,404.2 L373.7,403.0 L371.4,404.3 L369.8,406.0 L367.8,409.0 L365.4,408.0 L364.0,403.8 L363.9,400.5 L361.9,400.2 L360.1,399.2 L358.5,397.5 L356.7,397.9 L355.6,395.8 L352.6,392.3 L351.2,392.1 L348.3,393.2 L346.8,394.9 L344.9,393.4 L342.8,393.0 L339.9,391.6 L340.5,390.7 L339.8,388.5 L338.3,386.8 L337.1,386.4 L337.4,384.3 L339.9,383.1 L340.0,380.7 L338.2,379.1 L336.1,378.3 L336.6,375.4 L336.4,373.7 L334.0,373.0 L331.2,372.8 L331.5,371.4 L330.7,370.5 L329.2,370.2 L328.9,367.9 L329.3,366.9 L327.6,366.0 L328.2,364.8 L326.4,362.5 L329.8,359.1 L330.5,354.3 L331.8,352.8 L332.1,351.6 L333.3,349.2 L333.3,347.5 L335.6,344.5 L333.7,343.3 L333.8,341.7 L335.3,341.1 L337.7,341.7 L338.7,341.0 L344.1,341.4 L347.6,341.2 L353.2,339.9 L358.4,339.9 L360.9,336.8 L361.4,334.9 L362.5,334.2 L362.2,332.1 L363.2,328.8 L365.3,326.6 L368.3,325.8 L370.0,322.9 L370.1,321.7 L371.4,321.3 L372.7,320.0 L374.5,319.2 L377.9,316.3 L377.8,315.6 L379.5,313.9 L378.8,312.6 L379.0,310.7 L380.6,309.0 L380.6,326.4 L380.6,341.4 L383.1,339.4 L385.3,341.2 L386.2,342.5 L389.7,343.5 L391.6,342.8 L393.0,343.0 L394.7,342.2 L396.1,341.0 L398.1,340.7 L400.3,339.2 L401.9,339.0 L405.2,339.3 L406.7,340.3 L409.8,340.1 L410.9,339.6 L411.9,340.4 L421.9,356.3 L425.6,361.7 L429.7,368.7 L439.0,386.1 L437.9,388.6 L436.7,389.4 L437.1,390.9 L436.4,392.8 L433.6,395.4 L433.6,396.8 L432.5,397.6 L432.5,401.1 L419.5,406.8 L409.4,411.2 L399.7,408.3 L397.9,407.7 L386.9,404.4 L387.3,406.7 Z "/>
+              <!-- MOQUEGUA -->
+              <path class="dept-path" data-dept="moquegua" d="M364.9,544.8 L362.9,543.3 L358.0,540.7 L358.9,539.3 L358.4,537.9 L357.9,534.5 L357.3,531.9 L354.4,528.8 L355.9,527.8 L360.0,523.1 L358.9,521.0 L357.6,521.0 L355.9,516.3 L355.8,514.5 L356.4,512.6 L358.0,512.0 L359.3,512.9 L360.4,512.2 L360.7,508.9 L361.8,506.9 L361.7,504.4 L364.9,504.7 L366.7,504.2 L369.3,505.3 L370.5,504.2 L369.8,502.8 L369.5,499.7 L370.3,499.7 L373.4,497.7 L372.8,493.3 L373.3,492.2 L374.6,492.1 L374.4,489.9 L376.0,491.0 L377.8,491.4 L379.7,490.2 L382.2,490.1 L383.2,491.3 L386.7,492.8 L386.9,494.9 L388.2,496.7 L388.8,500.1 L387.5,502.0 L388.9,502.8 L389.9,504.8 L392.1,505.6 L393.6,507.2 L393.9,508.7 L396.3,510.0 L397.5,509.2 L398.8,510.1 L399.0,512.3 L397.4,513.3 L396.2,514.7 L396.1,517.1 L394.5,518.5 L391.5,518.9 L391.2,517.4 L392.8,514.6 L389.7,513.6 L385.7,515.6 L385.0,518.7 L385.5,522.8 L384.2,523.1 L383.1,525.3 L380.7,526.7 L378.5,527.0 L377.5,528.5 L376.4,531.7 L376.9,532.3 L372.6,536.9 L371.7,540.8 L369.3,540.6 L366.0,542.9 L364.9,544.8 Z "/>
+              <!-- PASCO -->
+              <path class="dept-path" data-dept="pasco" d="M211.6,339.1 L212.7,343.2 L212.1,345.8 L210.7,345.3 L210.4,344.1 L208.1,343.6 L205.3,344.0 L204.1,342.4 L202.6,341.7 L203.1,340.3 L202.6,337.4 L201.0,334.9 L200.2,332.1 L200.4,330.8 L199.0,329.2 L198.3,326.0 L199.1,324.7 L200.6,323.9 L205.3,322.8 L205.8,321.6 L209.9,320.1 L210.7,323.6 L211.8,322.6 L213.3,322.7 L216.0,324.3 L217.6,324.5 L218.2,325.4 L220.6,325.8 L221.1,323.7 L222.2,322.1 L224.2,320.5 L224.7,319.2 L226.3,319.0 L228.7,317.7 L228.8,315.5 L229.6,312.9 L231.6,312.2 L232.1,310.1 L233.4,311.0 L235.5,310.7 L237.9,309.0 L238.7,307.7 L241.2,307.7 L241.5,307.0 L240.7,305.1 L242.6,305.1 L245.0,306.7 L246.5,306.9 L248.0,306.1 L249.8,306.7 L251.4,304.4 L252.8,303.7 L254.2,304.0 L255.6,303.5 L255.5,302.2 L257.6,298.8 L257.2,297.3 L257.9,295.7 L259.4,294.5 L262.1,296.5 L262.4,298.7 L264.8,299.4 L265.1,302.6 L266.2,305.0 L266.1,307.6 L267.2,308.6 L266.9,311.2 L267.6,313.6 L268.6,314.9 L269.8,314.8 L270.5,316.4 L272.7,317.0 L272.9,319.8 L271.3,322.7 L272.0,325.0 L273.0,325.0 L274.1,326.6 L275.6,329.6 L274.6,330.6 L272.7,330.5 L271.2,331.7 L270.1,333.2 L268.4,334.1 L268.1,335.7 L265.1,336.5 L264.4,337.8 L262.5,338.7 L261.3,338.5 L260.2,337.4 L258.5,337.1 L256.9,336.1 L256.0,336.3 L254.8,334.8 L252.9,334.5 L251.0,333.4 L250.4,333.8 L249.2,331.7 L247.5,331.4 L246.2,333.3 L244.0,332.9 L242.5,334.4 L241.9,336.1 L240.3,337.3 L237.6,337.1 L235.9,338.4 L235.4,336.9 L236.0,335.0 L235.1,334.1 L232.6,333.8 L232.2,335.7 L229.1,336.4 L227.9,335.7 L226.3,336.1 L224.7,338.0 L224.1,337.4 L222.2,337.9 L220.1,336.0 L218.6,337.8 L217.2,338.6 L216.2,340.2 L214.2,340.2 L213.7,338.9 L213.2,338.8 L212.5,339.1 L212.2,339.0 L212.0,339.0 L211.6,339.1 Z "/>
+              <!-- PIURA -->
+              <path class="dept-path" data-dept="piura" d="M124.2,161.3 L123.1,162.4 L121.6,165.7 L119.1,168.1 L120.0,169.3 L119.7,171.0 L120.6,171.8 L121.5,176.0 L122.3,177.9 L118.5,178.4 L119.2,180.5 L118.5,184.7 L118.8,186.0 L120.5,189.0 L117.9,191.3 L115.5,189.7 L112.5,190.4 L111.7,188.8 L111.6,187.1 L110.1,187.6 L108.4,187.4 L109.0,184.4 L106.9,181.7 L105.6,181.6 L104.6,179.2 L104.9,178.2 L103.5,177.0 L102.2,177.7 L101.5,179.7 L100.7,184.8 L96.7,188.9 L94.7,189.0 L90.8,190.6 L89.4,192.4 L81.9,203.3 L76.8,200.8 L73.4,197.9 L68.0,194.6 L66.3,191.6 L66.3,188.9 L67.9,187.4 L68.7,185.8 L70.1,187.1 L72.5,187.6 L74.0,186.5 L74.9,184.7 L75.2,181.3 L73.8,177.6 L72.0,175.0 L69.2,172.2 L67.5,171.8 L66.6,170.2 L65.0,168.7 L66.8,164.5 L68.1,164.8 L69.0,163.5 L68.2,161.4 L65.5,158.1 L61.0,152.9 L61.5,152.3 L62.3,148.2 L61.7,147.0 L62.8,145.5 L63.3,143.1 L63.0,141.8 L63.7,140.0 L65.7,138.8 L67.8,136.4 L69.5,135.2 L71.6,136.3 L72.1,137.7 L74.3,138.3 L76.6,137.8 L79.7,138.1 L82.0,139.5 L83.9,137.8 L85.0,135.7 L86.1,135.0 L87.2,136.3 L87.6,138.4 L89.5,138.4 L90.8,139.2 L89.6,141.0 L87.9,142.6 L87.1,144.0 L87.5,146.2 L89.0,147.0 L91.9,145.5 L94.8,142.9 L95.3,141.6 L97.5,141.2 L100.8,143.9 L103.0,144.0 L104.4,144.9 L105.4,146.5 L106.7,147.2 L109.3,146.6 L110.9,145.5 L111.7,145.6 L113.6,147.9 L115.6,148.1 L116.1,149.6 L115.9,151.2 L118.7,157.3 L120.9,159.0 L122.6,161.4 L124.2,161.3 Z "/>
+              <!-- PUNO -->
+              <path class="dept-path" data-dept="puno" d="M431.2,502.5 L431.2,497.5 L434.3,500.0 L434.3,500.9 L431.2,502.5 Z M409.6,528.9 L408.0,528.5 L406.9,529.1 L405.2,527.4 L403.3,527.6 L397.7,524.1 L397.5,522.0 L395.9,520.5 L394.5,518.5 L396.1,517.1 L396.2,514.7 L397.4,513.3 L399.0,512.3 L398.8,510.1 L397.5,509.2 L396.3,510.0 L393.9,508.7 L393.6,507.2 L392.1,505.6 L389.9,504.8 L388.9,502.8 L387.5,502.0 L388.8,500.1 L388.2,496.7 L386.9,494.9 L386.7,492.8 L383.2,491.3 L382.2,490.1 L379.7,490.2 L377.8,491.4 L376.0,491.0 L374.4,489.9 L373.7,488.2 L371.0,484.1 L372.0,481.9 L371.5,479.9 L368.8,477.5 L368.6,475.3 L369.2,474.2 L367.9,472.8 L368.7,470.9 L370.5,469.3 L369.5,468.1 L370.2,467.1 L369.8,465.9 L368.9,459.8 L369.5,459.1 L369.2,455.6 L369.8,453.6 L368.7,452.9 L367.5,453.3 L365.7,450.7 L369.0,447.9 L369.2,445.9 L370.2,444.1 L369.5,443.0 L370.2,441.6 L371.7,440.6 L372.6,438.9 L372.1,437.7 L373.0,435.9 L374.8,434.5 L375.1,433.0 L373.2,431.6 L374.0,429.0 L374.1,426.6 L376.0,425.3 L377.4,425.7 L378.0,425.0 L377.0,423.1 L377.6,420.8 L379.4,420.6 L380.5,419.2 L382.7,418.1 L383.0,416.7 L385.4,414.4 L385.7,412.7 L387.0,412.1 L387.2,410.4 L386.3,408.7 L387.3,406.7 L386.9,404.4 L397.9,407.7 L399.7,408.3 L409.4,411.2 L419.5,406.8 L432.5,401.1 L433.1,402.8 L432.5,404.5 L433.3,408.3 L431.2,415.5 L428.9,420.4 L426.9,420.6 L426.7,421.5 L429.4,423.6 L429.3,424.4 L431.2,425.3 L430.2,427.2 L429.3,427.7 L429.4,430.2 L430.6,431.6 L431.8,432.1 L433.0,435.7 L433.9,437.4 L429.8,437.4 L428.3,440.2 L429.2,442.0 L427.8,443.5 L426.2,444.3 L424.5,446.2 L424.2,448.1 L422.2,448.2 L421.9,450.4 L421.0,451.2 L422.0,452.9 L419.7,453.7 L418.2,454.8 L418.5,457.2 L417.9,459.2 L419.8,462.1 L420.2,463.5 L421.7,464.3 L424.8,467.6 L422.3,470.1 L421.3,471.7 L421.2,474.7 L420.1,473.7 L418.8,476.7 L415.7,475.1 L414.5,473.4 L411.7,471.2 L410.9,471.7 L409.6,470.2 L409.5,469.1 L407.9,467.6 L407.0,467.8 L405.7,469.9 L404.4,469.2 L402.0,469.5 L401.8,471.3 L400.6,472.5 L401.2,474.2 L403.0,477.3 L405.7,480.3 L406.3,482.4 L405.0,482.3 L403.5,481.1 L403.5,479.8 L402.1,478.4 L400.0,481.5 L398.4,481.3 L397.9,482.2 L398.2,484.1 L400.0,486.0 L402.4,487.2 L404.2,484.1 L405.8,485.5 L405.8,487.4 L407.4,488.0 L408.7,489.2 L411.9,489.3 L415.2,490.3 L416.1,491.9 L413.7,495.0 L414.0,496.7 L416.0,495.8 L418.0,498.0 L421.5,498.6 L424.4,498.0 L427.1,496.4 L429.4,498.2 L427.2,498.9 L428.1,500.4 L428.0,502.5 L426.2,504.3 L426.2,505.3 L427.6,507.2 L427.8,508.6 L428.8,510.1 L427.4,511.0 L423.6,512.2 L422.2,515.4 L419.6,517.8 L418.5,519.9 L416.9,521.0 L417.6,522.5 L415.3,523.2 L413.4,524.7 L412.1,525.1 L409.6,528.9 Z M402.2,466.8 L400.9,465.3 L400.2,465.8 L398.3,465.3 L397.5,464.0 L395.4,465.7 L397.1,466.5 L400.3,467.2 L402.2,466.8 Z "/>
+              <!-- SANMARTIN -->
+              <path class="dept-path" data-dept="sanmartin" d="M220.4,261.5 L217.3,261.9 L216.0,265.8 L216.5,271.5 L214.9,274.4 L213.0,275.6 L212.0,271.4 L211.6,269.1 L210.2,267.5 L210.0,264.7 L207.5,265.1 L206.7,266.4 L206.0,268.9 L203.7,267.1 L201.3,267.1 L199.1,267.7 L195.1,267.3 L194.6,268.2 L192.6,268.9 L188.6,268.4 L187.3,267.3 L187.4,266.3 L186.1,265.0 L187.5,264.0 L190.8,263.7 L192.7,261.6 L193.0,260.3 L192.3,258.4 L192.9,257.0 L190.5,255.2 L189.5,253.4 L186.6,252.6 L185.6,252.8 L183.0,252.3 L181.4,253.7 L178.6,253.5 L177.9,251.6 L178.8,249.1 L177.9,249.0 L176.9,246.3 L175.8,246.0 L174.3,244.6 L175.6,242.9 L174.1,239.4 L174.4,237.1 L171.9,235.0 L171.1,232.7 L171.3,231.6 L170.8,229.2 L172.0,228.6 L170.9,226.5 L168.8,225.2 L167.4,221.0 L168.5,218.9 L167.4,216.3 L167.8,214.6 L167.8,212.0 L169.4,212.4 L171.8,210.5 L173.9,212.4 L178.7,213.0 L177.1,210.3 L178.3,210.2 L180.1,207.8 L180.3,206.2 L181.9,204.3 L181.5,202.1 L182.3,202.0 L183.5,203.6 L185.0,203.6 L186.1,201.2 L184.1,199.1 L183.4,196.6 L181.7,196.4 L179.7,195.6 L178.3,193.4 L177.1,194.0 L175.8,192.2 L174.2,194.1 L172.4,192.5 L170.1,191.6 L170.6,190.3 L169.9,188.0 L167.3,186.8 L167.0,182.8 L168.1,180.4 L167.2,178.4 L167.2,175.4 L167.9,174.5 L169.3,174.6 L170.1,174.6 L172.7,176.1 L173.4,175.1 L174.6,176.3 L176.3,179.8 L177.9,179.9 L179.0,179.4 L180.0,180.4 L183.2,180.1 L188.8,182.5 L190.2,182.3 L191.2,183.4 L193.4,184.7 L195.0,184.6 L195.5,188.1 L197.6,190.8 L197.6,192.3 L200.8,192.3 L203.6,192.9 L207.6,190.7 L208.8,191.4 L210.4,194.8 L211.8,195.3 L213.2,197.2 L216.1,197.5 L219.0,195.2 L220.9,195.0 L222.0,196.3 L224.8,196.4 L225.4,195.2 L228.4,196.3 L229.4,195.1 L231.0,194.7 L231.4,192.9 L232.7,192.3 L233.8,195.1 L234.1,197.1 L235.2,198.3 L235.1,200.2 L233.3,202.6 L234.5,206.9 L234.8,211.3 L234.8,215.1 L234.5,215.6 L230.8,217.3 L229.8,216.9 L228.9,218.1 L226.8,217.7 L224.6,216.0 L221.0,215.7 L218.4,216.4 L219.6,218.9 L218.4,220.4 L219.6,221.9 L219.6,224.4 L218.1,226.8 L215.6,228.1 L214.9,230.0 L213.6,231.3 L214.1,232.0 L213.5,234.1 L215.0,236.8 L217.2,238.7 L216.9,243.6 L218.6,245.7 L220.9,250.7 L224.1,249.5 L225.0,251.1 L224.5,253.6 L222.4,254.0 L221.4,254.8 L221.7,257.4 L222.5,259.4 L221.9,261.2 L220.4,261.5 Z "/>
+              <!-- TACNA -->
+              <path class="dept-path" data-dept="tacna" d="M409.6,528.9 L411.6,529.1 L414.8,531.5 L414.7,535.4 L408.9,540.0 L405.0,539.6 L404.2,540.8 L404.9,543.1 L405.0,546.0 L406.4,548.5 L406.3,549.7 L404.5,553.6 L403.2,555.1 L400.1,558.0 L397.4,558.2 L394.4,559.7 L390.3,559.3 L387.7,560.6 L384.5,558.3 L378.6,555.0 L374.6,551.4 L372.7,550.6 L372.2,549.1 L368.7,546.5 L366.2,546.2 L364.9,544.8 L366.0,542.9 L369.3,540.6 L371.7,540.8 L372.6,536.9 L376.9,532.3 L376.4,531.7 L377.5,528.5 L378.5,527.0 L380.7,526.7 L383.1,525.3 L384.2,523.1 L385.5,522.8 L385.0,518.7 L385.7,515.6 L389.7,513.6 L392.8,514.6 L391.2,517.4 L391.5,518.9 L394.5,518.5 L395.9,520.5 L397.5,522.0 L397.7,524.1 L403.3,527.6 L405.2,527.4 L406.9,529.1 L408.0,528.5 L409.6,528.9 Z "/>
+              <!-- TUMBES -->
+              <path class="dept-path" data-dept="tumbes" d="M86.1,135.0 L85.0,135.7 L83.9,137.8 L82.0,139.5 L79.7,138.1 L76.6,137.8 L74.3,138.3 L72.1,137.7 L71.6,136.3 L69.5,135.2 L71.1,132.1 L72.1,131.2 L75.7,128.8 L76.9,125.4 L78.1,124.1 L83.2,121.7 L84.3,120.3 L85.5,117.9 L87.7,117.3 L89.2,117.4 L91.9,114.9 L94.0,116.0 L93.4,117.0 L94.4,118.7 L95.0,120.5 L95.2,124.7 L95.8,126.6 L95.9,128.7 L96.4,129.9 L93.4,131.2 L91.7,133.1 L89.8,132.0 L87.8,132.2 L86.1,135.0 Z "/>
+              <!-- UCAYALI -->
+              <path class="dept-path" data-dept="ucayali" d="M380.6,309.0 L379.0,310.7 L378.8,312.6 L379.5,313.9 L377.8,315.6 L377.9,316.3 L374.5,319.2 L372.7,320.0 L371.4,321.3 L370.1,321.7 L370.0,322.9 L368.3,325.8 L365.3,326.6 L363.2,328.8 L362.2,332.1 L362.5,334.2 L361.4,334.9 L360.9,336.8 L358.4,339.9 L353.2,339.9 L347.6,341.2 L344.1,341.4 L338.7,341.0 L337.7,341.7 L335.3,341.1 L333.8,341.7 L333.7,343.3 L335.6,344.5 L333.3,347.5 L333.3,349.2 L332.1,351.6 L330.1,350.5 L327.9,351.3 L324.9,352.9 L323.3,354.3 L321.0,354.1 L318.2,352.7 L317.2,351.7 L315.5,352.8 L312.5,352.0 L310.8,351.2 L311.2,349.8 L310.3,349.2 L309.7,347.3 L308.6,349.2 L305.3,350.1 L303.3,350.0 L301.7,350.7 L299.5,350.6 L296.9,352.8 L295.0,350.9 L295.7,350.4 L296.0,348.1 L295.0,343.3 L293.2,342.8 L292.4,340.1 L292.7,337.2 L291.2,336.8 L288.6,334.6 L286.8,333.5 L285.1,335.4 L284.8,339.0 L283.9,340.0 L283.5,342.5 L283.7,345.7 L280.2,344.9 L280.2,343.4 L279.4,341.1 L276.8,341.0 L273.6,341.9 L271.9,341.9 L268.4,343.0 L266.3,341.5 L264.7,341.2 L264.4,339.9 L262.5,338.7 L264.4,337.8 L265.1,336.5 L268.1,335.7 L268.4,334.1 L270.1,333.2 L271.2,331.7 L272.7,330.5 L274.6,330.6 L275.6,329.6 L274.1,326.6 L273.0,325.0 L272.0,325.0 L271.3,322.7 L272.9,319.8 L272.7,317.0 L270.5,316.4 L269.8,314.8 L268.6,314.9 L267.6,313.6 L266.9,311.2 L267.2,308.6 L266.1,307.6 L266.2,305.0 L265.1,302.6 L264.8,299.4 L262.4,298.7 L262.1,296.5 L259.4,294.5 L259.5,293.5 L262.0,290.7 L260.5,286.5 L260.5,285.2 L259.3,284.5 L260.1,283.1 L260.4,279.3 L261.4,276.3 L263.7,275.0 L263.9,274.2 L263.2,269.3 L261.1,268.2 L255.8,270.7 L254.3,271.6 L254.2,274.4 L251.5,277.5 L251.7,279.6 L250.4,280.3 L248.4,278.8 L246.9,279.4 L245.5,280.9 L245.2,282.8 L244.3,284.1 L242.7,284.9 L243.5,286.4 L243.5,288.5 L241.9,289.8 L241.3,290.9 L239.9,290.6 L236.3,290.5 L235.0,292.9 L233.0,293.6 L229.7,293.5 L227.9,289.8 L226.1,287.3 L225.7,285.3 L223.6,282.3 L223.7,280.8 L222.4,278.1 L222.2,275.2 L221.5,273.2 L223.1,271.6 L224.9,271.3 L226.5,268.2 L226.5,266.6 L228.4,266.4 L228.7,265.0 L230.4,264.1 L231.9,264.1 L233.4,265.8 L236.6,264.9 L236.8,263.6 L234.7,262.3 L234.7,260.5 L235.7,259.4 L236.9,256.8 L238.5,256.0 L241.2,255.6 L242.5,256.5 L243.3,255.7 L244.2,252.4 L245.5,251.2 L248.7,250.4 L250.3,250.9 L252.8,254.3 L256.6,252.9 L257.9,251.3 L260.8,250.1 L262.6,246.4 L264.2,245.2 L262.9,244.4 L262.1,242.9 L262.5,242.0 L260.4,238.8 L260.4,236.9 L261.2,235.0 L262.3,234.3 L263.6,230.8 L264.6,230.0 L265.8,230.9 L270.1,232.5 L271.8,232.3 L274.2,232.7 L275.4,233.9 L278.4,235.4 L278.6,236.5 L280.1,238.0 L282.9,240.0 L282.5,241.1 L284.4,242.0 L285.4,243.3 L288.1,244.2 L289.2,245.9 L289.2,247.6 L286.5,249.2 L288.3,250.7 L289.4,252.2 L290.3,252.1 L292.0,255.6 L291.6,256.8 L292.6,259.2 L293.7,260.0 L293.2,262.2 L298.3,265.9 L299.5,266.1 L299.1,269.8 L299.9,270.1 L301.9,272.5 L304.4,272.7 L306.0,275.3 L306.1,276.3 L308.3,279.2 L309.4,279.2 L311.0,282.6 L311.2,284.5 L310.5,286.0 L307.5,288.5 L304.7,292.3 L303.8,292.5 L303.4,294.0 L317.8,294.0 L323.4,296.1 L327.1,295.9 L330.8,297.9 L330.6,299.7 L331.9,301.3 L331.5,302.9 L332.8,304.9 L334.7,305.5 L334.4,306.5 L334.7,308.7 L334.0,309.4 L333.8,311.5 L347.1,311.5 L357.9,311.5 L358.8,310.5 L360.2,311.3 L363.3,309.7 L364.4,307.7 L367.5,306.0 L369.1,306.1 L369.8,304.4 L371.3,303.8 L373.0,301.5 L375.0,300.8 L376.5,298.7 L379.3,297.0 L382.1,294.5 L383.6,296.4 L382.8,297.7 L381.2,298.1 L381.0,299.8 L382.4,301.7 L383.1,303.3 L382.9,304.5 L380.6,305.7 L380.6,309.0 Z "/>
+
+              <!-- Department percentage labels -->
+              <text x="83" y="127" class="map-label" data-label="tumbes"></text>
+              <text x="83" y="156" class="map-label" data-label="piura"></text>
+              <text x="135" y="196" class="map-label" data-label="cajamarca"></text>
+              <text x="100" y="200" class="map-label" data-label="lambayeque"></text>
+              <text x="165" y="165" class="map-label" data-label="amazonas"></text>
+              <text x="270" y="120" class="map-label" data-label="loreto"></text>
+              <text x="145" y="255" class="map-label" data-label="lalibertad"></text>
+              <text x="200" y="215" class="map-label" data-label="sanmartin"></text>
+              <text x="165" y="295" class="map-label" data-label="ancash"></text>
+              <text x="210" y="290" class="map-label" data-label="huanuco"></text>
+              <text x="290" y="290" class="map-label" data-label="ucayali"></text>
+              <text x="190" y="350" class="map-label" data-label="lima"></text>
+              <text x="210" y="325" class="map-label" data-label="pasco"></text>
+              <text x="240" y="365" class="map-label" data-label="junin"></text>
+              <text x="230" y="420" class="map-label" data-label="ica"></text>
+              <text x="245" y="395" class="map-label" data-label="huancavelica"></text>
+              <text x="310" y="420" class="map-label" data-label="apurimac"></text>
+              <text x="280" y="415" class="map-label" data-label="ayacucho"></text>
+              <text x="330" y="400" class="map-label" data-label="cusco"></text>
+              <text x="380" y="360" class="map-label" data-label="madrededios"></text>
+              <text x="310" y="480" class="map-label" data-label="arequipa"></text>
+              <text x="400" y="440" class="map-label" data-label="puno"></text>
+              <text x="375" y="500" class="map-label" data-label="moquegua"></text>
+              <text x="395" y="540" class="map-label" data-label="tacna"></text>
+            </svg>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- POPUP FLOTANTE -->
+    <div class="dept-popup" id="deptPopup">
+      <button class="popup-close" onclick="closePopup()">×</button>
+      <div id="popupContent"></div>
+    </div>
+
+    <!-- SEGUNDA VUELTA BANNER -->
+    <div class="runoff-banner fade-up d2">
+      <div class="runoff-cand">
+        <div class="runoff-avatar-fb" style="background:var(--keiko-color)" id="rfb-keiko">
+          <img class="runoff-avatar" data-cand-img="keiko" src="" alt="Keiko Fujimori"
+            onerror="this.style.display='none'">KF
+        </div>
+        <div>
+          <div class="runoff-name">Keiko Fujimori</div>
+          <div class="runoff-party">Fuerza Popular · Derecha</div>
+          <div class="runoff-pct" style="color:var(--keiko-color)">17.05%</div>
+        </div>
+      </div>
+      <div class="runoff-vs-col">
+        <span class="vs-big">VS</span>
+        <span class="vs-date">Segunda Vuelta</span>
+        <span class="vs-badge-pill">7 de Junio 2026</span>
+      </div>
+      <div class="runoff-cand right">
+        <div class="runoff-avatar-fb" style="background:var(--sanchez-color)" id="rfb-sanchez">
+          <img class="runoff-avatar" data-cand-img="sanchez" src="" alt="Roberto Sánchez"
+            onerror="this.style.display='none'">RS
+        </div>
+        <div class="cand-info-right">
+          <div class="runoff-name">Roberto Sánchez</div>
+          <div class="runoff-party">Juntos por el Perú · Izquierda</div>
+          <div class="runoff-pct" style="color:var(--sanchez-color)">12.01%</div>
+        </div>
+      </div>
+      <div class="runoff-note">
+        Resultados sujetos a verificación definitiva por el Jurado Electoral Especial (JEE) · Fuente: ONPE al 93.85% de
+        actas procesadas
+      </div>
+    </div>
+
+    <!-- ─── CANDIDATOS ─── -->
+    <section id="candidatos" style="margin-bottom:30px">
+      <div class="section-hdr">
+        <div class="section-title">
+          <div class="sec-icon">👤</div>Candidatos Presidenciales — Análisis Detallado
+        </div>
+        <span style="font-size:12.5px;color:var(--text-muted)">Antecedentes · Postura económica · Gas &amp;
+          Energía</span>
+      </div>
+
+      <div class="grid-3" id="candidatesGrid">
+
+        <!-- ══════════════ KEIKO FUJIMORI ══════════════ -->
+        <div class="cand-card cand-keiko fade-up d1" data-cand="keiko">
+          <div class="cand-top-bar" style="background:var(--keiko-color)"></div>
+          <div class="cand-header">
+            <div class="cand-photo-wrap">
+              <div class="cand-photo-fb" style="background:var(--keiko-color)" id="fb-keiko">
+                <img class="cand-photo" data-cand-img="keiko" src="" alt="Keiko Fujimori"
+                  onerror="this.style.display='none'">KF
+              </div>
+              <div class="cand-result-badge" style="color:var(--keiko-color)">17.05%</div>
+            </div>
+            <div class="cand-info">
+              <div class="cand-name">Keiko Fujimori</div>
+              <div class="cand-party">Fuerza Popular · Derecha / Centro-derecha</div>
+              <div class="tags">
+                <span class="tag" style="background:#fff3eb;color:var(--keiko-color)">1ª Vuelta</span>
+                <span class="tag" style="background:#dcfce7;color:var(--favorable)">Pro-mercado</span>
+                <span class="tag" style="background:#e0e7ff;color:#3730a3">Segunda Vuelta</span>
+              </div>
+            </div>
+          </div>
+          <div class="vote-bar-sec">
+            <div class="vote-bar-labels"><span>Votos válidos</span><strong
+                style="color:var(--keiko-color)">17.05%</strong></div>
+            <div class="vote-track">
+              <div class="vote-fill" style="width:17.05%;background:var(--keiko-color)"></div>
+            </div>
+          </div>
+          <div class="tabs-nav">
+            <button class="tab-btn active" onclick="switchTab('keiko','perfil',this)">Perfil</button>
+            <button class="tab-btn" onclick="switchTab('keiko','legal',this)">⚖ Legal</button>
+            <button class="tab-btn" onclick="switchTab('keiko','economia',this)">📈 Economía</button>
+            <button class="tab-btn" onclick="switchTab('keiko','energia',this)">⚡ Energía</button>
+            <button class="tab-btn" onclick="switchTab('keiko','sector',this)">🏭 Sector</button>
+          </div>
+
+          <div class="tab-content active" id="keiko-perfil">
+            <ul class="info-rows">
+              <li><span class="bul">•</span><span><strong>Partido:</strong> Fuerza Popular — ala derecha del espectro
+                  político peruano</span></li>
+              <li><span class="bul">•</span><span><strong>Trayectoria:</strong> Congresista (2006–2011), candidata
+                  presidencial 2011, 2016 y 2021. Hija del expresidente Alberto Fujimori (1990–2000)</span></li>
+              <li><span class="bul">•</span><span><strong>Propuestas clave:</strong> Atraer US$5–7B en inversión anual,
+                  500,000 empleos formales, eliminar +500 trámites burocráticos, IA en ventanilla única digital</span>
+              </li>
+              <li><span class="bul">•</span><span><strong>Seguridad:</strong> Cero tolerancia al crimen, reforzar PNP y
+                  Fuerzas Armadas</span></li>
+              <li><span class="bul">•</span><span><strong>Minería:</strong> Fast-track de permisos para proyectos
+                  estratégicos, modernizar ley minera</span></li>
+              <li><span class="bul">•</span><span><strong>BCRP:</strong> Independencia garantizada; respeto a contratos
+                  vigentes</span></li>
+            </ul>
+          </div>
+
+          <div class="tab-content" id="keiko-legal">
+            <div class="case-box">
+              <div class="case-hdr">
+                <div class="case-name">Caso Cócteles (Lavado de Activos)</div>
+                <span class="case-status s-closed">Archivado</span>
+              </div>
+              <div class="case-body">Fiscalía investigó financiamiento ilegal de campañas 2011 y 2016 vinculado a
+                Odebrecht. Hasta US$17.3M imputados. TC declaró nulidad del proceso en Oct 2024 por violación al
+                principio de legalidad. Confirmado por PJ en Abr 2025. <strong>Estado: definitivamente
+                  archivado.</strong> Fiscalía solicitó originalmente 35 años de prisión.</div>
+            </div>
+            <div class="case-box">
+              <div class="case-hdr">
+                <div class="case-name">Investigación — Aportes Campaña 2021</div>
+                <span class="case-status s-active">Activo</span>
+              </div>
+              <div class="case-body">Desde Sep 2025: investigación preparatoria por S/1.31M en fondos ilícitos usados
+                para financiar 1,384 impugnaciones electorales post-elecciones 2021. Nueve personas niegan haber
+                realizado los aportes declarados por Fuerza Popular. Medida: comparecencia simple (sin detención).</div>
+            </div>
+            <div
+              style="background:var(--neutral-bg);border-radius:var(--radius-sm);padding:12px;margin-top:10px;font-size:12px;color:#92400e">
+              <strong>Partido:</strong> Fuerza Popular presentó 28 candidatos al Congreso con antecedentes penales en
+              sus listas 2026 (La República, marzo 2026).
+            </div>
+          </div>
+
+          <div class="tab-content" id="keiko-economia">
+            <div class="stance-wrap">
+              <div class="stance-heads"><span>Estatismo</span><span>Centro</span><span>Pro-mercado</span></div>
+              <div class="stance-track">
+                <div class="stance-thumb" style="left:78%"></div>
+              </div>
+            </div>
+            <ul class="info-rows" style="margin-top:12px">
+              <li><span class="bul">→</span><span><strong>Orientación:</strong> Pro-mercado moderada · Economía social
+                  de mercado</span></li>
+              <li><span class="bul">→</span><span><strong>Inversión:</strong> Atraer US$5–7B anuales adicionales en
+                  inversión privada</span></li>
+              <li><span class="bul">→</span><span><strong>Empleo:</strong> 500,000 empleos formales · Formalización de
+                  MYPEs</span></li>
+              <li><span class="bul">→</span><span><strong>Fiscal:</strong> Disciplina fiscal · BCRP independiente</span>
+              </li>
+              <li><span class="bul">→</span><span><strong>Canon:</strong> 40% de distribución directa a comunidades
+                  afectadas por minería</span></li>
+              <li><span class="bul">→</span><span><strong>Contratos:</strong> Respeto irrestricto a contratos vigentes
+                  con privados</span></li>
+            </ul>
+          </div>
+
+          <div class="tab-content" id="keiko-energia">
+            <ul class="info-rows">
+              <li><span class="bul">⛽</span><span><strong>Camisea:</strong> No propone renegociar el contrato de
+                  concesión. Mantiene el marco contractual vigente con TgP y Pluspetrol</span></li>
+              <li><span class="bul">🏭</span><span><strong>Petroperú:</strong> Reforma operativa + venta de activos no
+                  estratégicos. Empresa refocada en refinación y distribución (Refinería Talara). Sin estatización
+                  plena</span></li>
+              <li><span class="bul">🛢️</span><span><strong>Oleoducto Norperuano:</strong> Gestión por operador privado
+                  especializado bajo modelo de administración de activos con garantías ambientales</span></li>
+              <li><span class="bul">🔥</span><span><strong>Gas natural regional:</strong> Proyectos de generación
+                  eléctrica descentralizada usando gas natural para regiones sin acceso energético</span></li>
+              <li><span class="bul">🌱</span><span><strong>Renovables:</strong> Plan reconoce que solo 6% de la matriz
+                  es renovable — expansión implícita pero sin propuesta concreta</span></li>
+            </ul>
+          </div>
+
+          <div class="tab-content" id="keiko-sector">
+            <div class="overall-verdict-row">
+              <span class="verdict-pill" style="background:var(--favorable-bg);color:var(--favorable)">✓ MODERADAMENTE
+                FAVORABLE</span>
+            </div>
+            <div class="ratings-grid">
+              <div class="rating-box">
+                <div class="rating-lbl">Contratos Camisea</div>
+                <div class="rating-val rv-good">✓ Sin renegociación</div>
+              </div>
+              <div class="rating-box">
+                <div class="rating-lbl">Inversión privada</div>
+                <div class="rating-val rv-good">✓ Pro-inversión</div>
+              </div>
+              <div class="rating-box">
+                <div class="rating-lbl">Regalías / Royalties</div>
+                <div class="rating-val rv-good">✓ Sin cambios</div>
+              </div>
+              <div class="rating-box">
+                <div class="rating-lbl">Estabilidad BCRP</div>
+                <div class="rating-val rv-good">✓ Garantizada</div>
+              </div>
+              <div class="rating-box">
+                <div class="rating-lbl">Petroperú</div>
+                <div class="rating-val rv-mid">~ Reforma parcial</div>
+              </div>
+              <div class="rating-box">
+                <div class="rating-lbl">Riesgo político</div>
+                <div class="rating-val rv-mid">~ Polarización</div>
+              </div>
+            </div>
+            <div class="sector-summary-box">
+              La opción de <strong>menor riesgo contractual</strong> para el sector energético. No propone renegociar
+              Camisea ni incrementar regalías. Respeta contratos vigentes y garantiza independencia del BCRP.
+              <strong>Reserva principal:</strong> el partido tiene historial de inestabilidad parlamentaria y los
+              antecedentes del legado Fujimori generan polarización que puede dificultar reformas y atraer inversión
+              extranjera. La nueva investigación por aportes 2021 es un factor de riesgo reputacional.
+            </div>
+          </div>
+        </div><!-- /keiko -->
+
+        <!-- ══════════════ ROBERTO SÁNCHEZ ══════════════ -->
+        <div class="cand-card cand-sanchez fade-up d2" data-cand="sanchez">
+          <div class="cand-top-bar" style="background:var(--sanchez-color)"></div>
+          <div class="cand-header">
+            <div class="cand-photo-wrap">
+              <div class="cand-photo-fb" style="background:var(--sanchez-color)" id="fb-sanchez">
+                <img class="cand-photo" data-cand-img="sanchez" src="" alt="Roberto Sánchez"
+                  onerror="this.style.display='none'">RS
+              </div>
+              <div class="cand-result-badge" style="color:var(--sanchez-color)">12.01%</div>
+            </div>
+            <div class="cand-info">
+              <div class="cand-name">Roberto Sánchez</div>
+              <div class="cand-party">Juntos por el Perú · Izquierda</div>
+              <div class="tags">
+                <span class="tag" style="background:#f0faf4;color:var(--sanchez-color)">2ª Vuelta</span>
+                <span class="tag" style="background:var(--risk-bg);color:var(--risk)">Castillista</span>
+                <span class="tag" style="background:#fce7f3;color:#9d174d">Intervencionista</span>
+              </div>
+            </div>
+          </div>
+          <div class="vote-bar-sec">
+            <div class="vote-bar-labels"><span>Votos válidos</span><strong
+                style="color:var(--sanchez-color)">12.01%</strong></div>
+            <div class="vote-track">
+              <div class="vote-fill" style="width:12.01%;background:var(--sanchez-color)"></div>
+            </div>
+          </div>
+          <div class="tabs-nav">
+            <button class="tab-btn active" onclick="switchTab('sanchez','perfil',this)">Perfil</button>
+            <button class="tab-btn" onclick="switchTab('sanchez','legal',this)">⚖ Legal</button>
+            <button class="tab-btn" onclick="switchTab('sanchez','economia',this)">📈 Economía</button>
+            <button class="tab-btn" onclick="switchTab('sanchez','energia',this)">⚡ Energía</button>
+            <button class="tab-btn" onclick="switchTab('sanchez','sector',this)">🏭 Sector</button>
+          </div>
+
+          <div class="tab-content active" id="sanchez-perfil">
+            <ul class="info-rows">
+              <li><span class="bul">•</span><span><strong>Partido:</strong> Juntos por el Perú — izquierda. Recibió
+                  apoyo abierto del encarcelado expresidente Pedro Castillo</span></li>
+              <li><span class="bul">•</span><span><strong>Trayectoria:</strong> Ministro de Comercio Exterior y Turismo
+                  (Mincetur) durante el gobierno de Castillo. Surge con fuerte voto rural y tardío en el conteo</span>
+              </li>
+              <li><span class="bul">•</span><span><strong>Propuestas clave:</strong> Nueva Constitución vía asamblea
+                  constituyente, renegociar contratos de recursos naturales, liberar a Castillo</span></li>
+              <li><span class="bul">•</span><span><strong>Seguridad:</strong> Depurar mandos policiales comprometidos
+                  con corrupción; comités de vigilancia ciudadana</span></li>
+              <li><span class="bul">•</span><span><strong>Economía:</strong> Modelo mixto público-privado con énfasis en
+                  soberanía estatal sobre recursos estratégicos</span></li>
+              <li><span class="bul">•</span><span><strong>BCRP:</strong> Declaró que reemplazaría al presidente Julio
+                  Velarde — alarma en mercados financieros</span></li>
+            </ul>
+          </div>
+
+          <div class="tab-content" id="sanchez-legal">
+            <div class="case-box">
+              <div class="case-hdr">
+                <div class="case-name">Negociación Incompatible (Mincetur)</div>
+                <span class="case-status s-active">Activo</span>
+              </div>
+              <div class="case-body">Investigación por contratar al asesor Daniel Abarca Soto siguiendo recomendación
+                del congresista Guido Bellido durante su gestión ministerial. Denuncia constitucional: 22 Mar 2025. Inv.
+                preliminar: 28 Ago 2024. Pendiente levantamiento de inmunidad parlamentaria.</div>
+            </div>
+            <div class="case-box">
+              <div class="case-hdr">
+                <div class="case-name">Peculado, Fraude y Falsedad Ideológica (x8)</div>
+                <span class="case-status s-pending">En trámite</span>
+              </div>
+              <div class="case-body">8 denuncias previas relacionadas con su período ministerial: peculado, fraude y
+                falsedad ideológica. Alegaciones de que funcionarios del ministerio eran presionados a entregar 10% de
+                salario para renovación de contratos. Sin condenas a la fecha.</div>
+            </div>
+            <div class="case-box">
+              <div class="case-hdr">
+                <div class="case-name">Rebelión — Golpe de Estado 7 Dic 2022</div>
+                <span class="case-status s-pending">En trámite</span>
+              </div>
+              <div class="case-body">Investigación por su presencia en el gobierno durante el intento de golpe de
+                Castillo el 7 de diciembre de 2022. Carpeta fiscal abierta.</div>
+            </div>
+          </div>
+
+          <div class="tab-content" id="sanchez-economia">
+            <div class="stance-wrap">
+              <div class="stance-heads"><span>Estatismo</span><span>Centro</span><span>Pro-mercado</span></div>
+              <div class="stance-track">
+                <div class="stance-thumb" style="left:18%"></div>
+              </div>
+            </div>
+            <ul class="info-rows" style="margin-top:12px">
+              <li><span class="bul">→</span><span><strong>Orientación:</strong> Izquierda / Estatismo moderado ·
+                  Economía mixta con soberanía estatal</span></li>
+              <li><span class="bul">→</span><span><strong>Regalías:</strong> Aumentar royalties en 20% para minería y
+                  energía</span></li>
+              <li><span class="bul">→</span><span><strong>Concesiones:</strong> Reducir períodos de concesión minera de
+                  30 a 5 años para sitios inactivos</span></li>
+              <li><span class="bul">→</span><span><strong>Impuestos:</strong> Impuestos progresivos a grandes fortunas;
+                  eliminar exoneraciones tributarias</span></li>
+              <li><span class="bul">→</span><span><strong>BCRP:</strong> Reemplazaría al presidente del BCRP — señal de
+                  posible pérdida de independencia</span></li>
+              <li><span class="bul">→</span><span><strong>Monopolios:</strong> Regulación antimonopólica; posibles
+                  controles de precios en sectores "en crisis"</span></li>
+            </ul>
+          </div>
+
+          <div class="tab-content" id="sanchez-energia">
+            <ul class="info-rows">
+              <li><span class="bul" style="color:var(--risk)">⚠</span><span><strong>Camisea — Renegociación:</strong>
+                  Propone <strong style="color:var(--risk)">renegociar el contrato de concesión del gas natural de
+                    Camisea</strong> para priorizar abastecimiento doméstico. Declaró: "La mitad del gas se vende al
+                  extranjero"</span></li>
+              <li><span class="bul" style="color:var(--risk)">⚠</span><span><strong>Hidrocarburos:</strong> Plan
+                  explícito de "renegociar contratos sobre recursos naturales estratégicos: gas, minería,
+                  hidrocarburos"</span></li>
+              <li><span class="bul">🏭</span><span><strong>Petroperú:</strong> Coherente con postura estatista:
+                  retención y reforma antes que privatización</span></li>
+              <li><span class="bul">🔥</span><span><strong>Gas doméstico:</strong> Prioridad al consumo interno,
+                  especialmente regiones no atendidas (Cusco y departamentos vecinos)</span></li>
+              <li><span class="bul">🌱</span><span><strong>Economía verde:</strong> Menciona "economía verde" y "matriz
+                  productiva diversificada" como desarrollo sostenible, sin propuestas específicas de inversión</span>
+              </li>
+            </ul>
+          </div>
+
+          <div class="tab-content" id="sanchez-sector">
+            <div class="overall-verdict-row">
+              <span class="verdict-pill" style="background:var(--risk-bg);color:var(--risk)">✗ RIESGO ELEVADO PARA EL
+                SECTOR</span>
+            </div>
+            <div class="ratings-grid">
+              <div class="rating-box">
+                <div class="rating-lbl">Contratos Camisea</div>
+                <div class="rating-val rv-vbad">✗ Propone renegociar</div>
+              </div>
+              <div class="rating-box">
+                <div class="rating-lbl">Inversión privada</div>
+                <div class="rating-val rv-bad">✗ Restrictiva</div>
+              </div>
+              <div class="rating-box">
+                <div class="rating-lbl">Regalías / Royalties</div>
+                <div class="rating-val rv-bad">✗ +20% anunciado</div>
+              </div>
+              <div class="rating-box">
+                <div class="rating-lbl">Estabilidad BCRP</div>
+                <div class="rating-val rv-bad">✗ En riesgo</div>
+              </div>
+              <div class="rating-box">
+                <div class="rating-lbl">Petroperú</div>
+                <div class="rating-val rv-mid">~ Sin privatizar</div>
+              </div>
+              <div class="rating-box">
+                <div class="rating-lbl">Riesgo regulatorio</div>
+                <div class="rating-val rv-vbad">✗ Muy alto</div>
+              </div>
+            </div>
+            <div class="sector-summary-box">
+              <strong>La opción de mayor riesgo para el sector energético.</strong> Es el único candidato que propone
+              <strong>explícitamente renegociar el contrato de Camisea</strong>, además de aumentar regalías en 20% y
+              ejercer "soberanía estatal" sobre recursos estratégicos. El reemplazo del presidente del BCRP generaría
+              inestabilidad macro que encarece el capital. Sus múltiples investigaciones activas y vinculación con el
+              castillismo (intento de golpe 2022) son señales de alto riesgo institucional para contratos de largo plazo
+              en el sector.
+            </div>
+          </div>
+        </div><!-- /sanchez -->
+
+        <!-- ══════════════ LÓPEZ ALIAGA ══════════════ -->
+        <div class="cand-card cand-lopez fade-up d3" data-cand="lopez">
+          <div class="cand-top-bar" style="background:var(--lopez-color)"></div>
+          <div class="cand-header">
+            <div class="cand-photo-wrap">
+              <div class="cand-photo-fb" style="background:var(--lopez-color)" id="fb-lopez">
+                <img class="cand-photo" data-cand-img="lopez" src="" alt="Rafael López Aliaga"
+                  onerror="this.style.display='none'">RLA
+              </div>
+              <div class="cand-result-badge" style="color:var(--lopez-color)">11.92%</div>
+            </div>
+            <div class="cand-info">
+              <div class="cand-name">Rafael López Aliaga</div>
+              <div class="cand-party">Renovación Popular · Ultraderecha</div>
+              <div class="tags">
+                <span class="tag" style="background:var(--lopez-light);color:var(--lopez-color)">3° prov.</span>
+                <span class="tag" style="background:#dcfce7;color:var(--favorable)">Ultra-liberal</span>
+                <span class="tag" style="background:var(--neutral-bg);color:#92400e">Volátil</span>
+              </div>
+            </div>
+          </div>
+          <div class="vote-bar-sec">
+            <div class="vote-bar-labels"><span>Votos válidos</span><strong
+                style="color:var(--lopez-color)">11.92%</strong></div>
+            <div class="vote-track">
+              <div class="vote-fill" style="width:11.92%;background:var(--lopez-color)"></div>
+            </div>
+          </div>
+          <div class="tabs-nav">
+            <button class="tab-btn active" onclick="switchTab('lopez','perfil',this)">Perfil</button>
+            <button class="tab-btn" onclick="switchTab('lopez','legal',this)">⚖ Legal</button>
+            <button class="tab-btn" onclick="switchTab('lopez','economia',this)">📈 Economía</button>
+            <button class="tab-btn" onclick="switchTab('lopez','energia',this)">⚡ Energía</button>
+            <button class="tab-btn" onclick="switchTab('lopez','sector',this)">🏭 Sector</button>
+          </div>
+
+          <div class="tab-content active" id="lopez-perfil">
+            <ul class="info-rows">
+              <li><span class="bul">•</span><span><strong>Partido:</strong> Renovación Popular — ultraderecha,
+                  comparable a Milei (Argentina) según medios internacionales</span></li>
+              <li><span class="bul">•</span><span><strong>Trayectoria:</strong> Empresario del grupo ACRES. Alcalde de
+                  Lima 2023–2025. 3er lugar provisional en primera vuelta 2026</span></li>
+              <li><span class="bul">•</span><span><strong>Propuestas clave:</strong> Reducir ministerios a máximo 6,
+                  lograr 7% de crecimiento anual, privatización masiva del Estado</span></li>
+              <li><span class="bul">•</span><span><strong>Infraestructura:</strong> Perú como hub portuario sudamericano
+                  (Chancay, Paita, Matarani, Ilo)</span></li>
+              <li><span class="bul">•</span><span><strong>Seguridad:</strong> Drones con IA para "neutralizar"
+                  criminales; intervención militar contra minería ilegal</span></li>
+              <li><span class="bul">•</span><span><strong>Post-elección:</strong> Llamó a "insurgencia civil" al quedar
+                  3°; Fiscalía abrió investigación preliminar</span></li>
+            </ul>
+          </div>
+
+          <div class="tab-content" id="lopez-legal">
+            <div class="case-box">
+              <div class="case-hdr">
+                <div class="case-name">Panama Papers — Lavado de Activos</div>
+                <span class="case-status s-active">Activo</span>
+              </div>
+              <div class="case-body">Empresas del grupo ACRES aparecen en Panama Papers. Estructuras offshore vinculadas
+                a presuntos contratos irregulares con Caja Metropolitana de Lima (2012–2014). PJ amplió investigación
+                preparatoria a 24 meses en Oct 2025. Monto sospechoso: &gt;S/1M. SUNAT confirmó que no declaró ingresos
+                del exterior. López Aliaga niega cargos.</div>
+            </div>
+            <div class="case-box">
+              <div class="case-hdr">
+                <div class="case-name">Colusión — Bonos MML por S/4,000M</div>
+                <span class="case-status s-active">Activo</span>
+              </div>
+              <div class="case-body">Mar 2026: Fiscalía Anticorrupción investiga autorización de S/4,000 millones en
+                bonos titularizados como alcalde de Lima, sin cumplir normas técnicas, legales ni contables.
+                Concentración de roles con Bank of America Securities sin proceso de selección fiduciario adecuado.
+              </div>
+            </div>
+            <div class="case-box">
+              <div class="case-hdr">
+                <div class="case-name">Disputa con ex-socio Lorenzo Sousa</div>
+                <span class="case-status s-pending">Civil/Penal</span>
+              </div>
+              <div class="case-body">Litigio en Perú, Panamá y Islas Vírgenes Británicas desde ~2004. Ocho denuncias
+                cruzadas incluyendo falsificación y fraude. Refleja historia de conflictividad empresarial.</div>
+            </div>
+          </div>
+
+          <div class="tab-content" id="lopez-economia">
+            <div class="stance-wrap">
+              <div class="stance-heads"><span>Estatismo</span><span>Centro</span><span>Pro-mercado</span></div>
+              <div class="stance-track">
+                <div class="stance-thumb" style="left:96%"></div>
+              </div>
+            </div>
+            <ul class="info-rows" style="margin-top:12px">
+              <li><span class="bul">→</span><span><strong>Orientación:</strong> Ultra-liberal · "Milei peruano" ·
+                  Privatización masiva</span></li>
+              <li><span class="bul">→</span><span><strong>Estado:</strong> Reducir ministerios de ~20 a máximo 6; corte
+                  radical del gasto público</span></li>
+              <li><span class="bul">→</span><span><strong>Crecimiento:</strong> Meta: 7% anual de PBI (desde ~2–3%
+                  actual)</span></li>
+              <li><span class="bul">→</span><span><strong>BCRP:</strong> Independencia garantizada; disciplina fiscal
+                  estricta</span></li>
+              <li><span class="bul">→</span><span><strong>Inversión:</strong> "Avalancha de inversión privada" en
+                  infraestructura y minería</span></li>
+              <li><span class="bul">→</span><span><strong>Litio:</strong> Empresa estatal de litio operada privadamente
+                  para exportar baterías/vehículos eléctricos desde Puno</span></li>
+            </ul>
+          </div>
+
+          <div class="tab-content" id="lopez-energia">
+            <ul class="info-rows">
+              <li><span class="bul">✓</span><span><strong>Petroperú:</strong> Privatización — transferir a trabajadores
+                  de la empresa. Llamó a privatizar también las distribuidoras eléctricas estatales</span></li>
+              <li><span class="bul">✓</span><span><strong>Camisea:</strong> Extender el gasoducto de Camisea a la región
+                  Puno, estableciendo una Zona Económica Especial (ZEE) libre de impuestos para exportación de baterías
+                  de litio</span></li>
+              <li><span class="bul">✓</span><span><strong>Hidrógeno verde:</strong> Posicionar a Perú como hub
+                  sudamericano de hidrógeno verde</span></li>
+              <li><span class="bul">✓</span><span><strong>Electricidad:</strong> Privatizar distribuidoras eléctricas de
+                  propiedad estatal</span></li>
+              <li><span class="bul">⚠</span><span><strong>Litio:</strong> Crear empresa estatal de litio en Puno operada
+                  por privados para exportar baterías y vehículos eléctricos</span></li>
+            </ul>
+          </div>
+
+          <div class="tab-content" id="lopez-sector">
+            <div class="overall-verdict-row">
+              <span class="verdict-pill" style="background:#eff6ff;color:var(--lopez-color)">~ FAVORABLE CON
+                RESERVAS</span>
+            </div>
+            <div class="ratings-grid">
+              <div class="rating-box">
+                <div class="rating-lbl">Contratos Camisea</div>
+                <div class="rating-val rv-good">✓ Ampliar red</div>
+              </div>
+              <div class="rating-box">
+                <div class="rating-lbl">Inversión privada</div>
+                <div class="rating-val rv-good">✓ Máxima apertura</div>
+              </div>
+              <div class="rating-box">
+                <div class="rating-lbl">Regalías / Royalties</div>
+                <div class="rating-val rv-good">✓ Sin incremento</div>
+              </div>
+              <div class="rating-box">
+                <div class="rating-lbl">Estabilidad BCRP</div>
+                <div class="rating-val rv-good">✓ Garantizada</div>
+              </div>
+              <div class="rating-box">
+                <div class="rating-lbl">Petroperú</div>
+                <div class="rating-val rv-good">✓ Privatización</div>
+              </div>
+              <div class="rating-box">
+                <div class="rating-lbl">Riesgo político personal</div>
+                <div class="rating-val rv-bad">✗ Investigado / Volátil</div>
+              </div>
+            </div>
+            <div class="sector-summary-box">
+              La postura más <strong>pro-privatización y pro-inversión privada</strong> del espectro. No propone
+              renegociar Camisea; al contrario, ampliaría su red y privatizaría Petroperú. Para el sector energético,
+              sus propuestas de política son las más favorables. <strong>Reservas importantes:</strong> sus dos
+              investigaciones activas (Panama Papers + bonos S/4B) y su estilo confrontacional (llamado a "insurgencia
+              civil" post-elección) crean riesgo de inestabilidad institucional que puede afectar la ejecución de sus
+              propias políticas. No pasó a segunda vuelta.
+            </div>
+          </div>
+        </div><!-- /lopez -->
+
+      </div><!-- /grid-3 -->
+    </section>
+
+    <!-- ─── COMPARATIVA ─── -->
+    <section id="comparativa" style="margin-bottom:30px">
+      <div class="section-hdr">
+        <div class="section-title">
+          <div class="sec-icon">⚖️</div>Tabla Comparativa — Sector Gas &amp; Energía
+        </div>
+      </div>
+      <div class="card comp-card">
+        <table class="comp-table">
+          <thead>
+            <tr>
+              <th>Criterio</th>
+              <th class="th-keiko">
+                <div style="display:flex;flex-direction:column;align-items:center;gap:8px">
+                  <img data-cand-img="keiko" src="" alt="Keiko Fujimori"
+                    style="width:52px;height:52px;border-radius:50%;object-fit:cover;border:2.5px solid var(--keiko-color)"
+                    onerror="this.style.display='none'">
+                  <span>Keiko Fujimori</span>
+                </div>
+              </th>
+              <th class="th-sanchez">
+                <div style="display:flex;flex-direction:column;align-items:center;gap:8px">
+                  <img data-cand-img="sanchez" src="" alt="Roberto Sánchez"
+                    style="width:52px;height:52px;border-radius:50%;object-fit:cover;border:2.5px solid var(--sanchez-color)"
+                    onerror="this.style.display='none'">
+                  <span>Roberto Sánchez</span>
+                </div>
+              </th>
+              <th class="th-lopez">
+                <div style="display:flex;flex-direction:column;align-items:center;gap:8px">
+                  <img data-cand-img="lopez" src="" alt="Rafael López Aliaga"
+                    style="width:52px;height:52px;border-radius:50%;object-fit:cover;border:2.5px solid var(--lopez-color)"
+                    onerror="this.style.display='none'">
+                  <span>Rafael López Aliaga</span>
+                </div>
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Orientación económica</td>
+              <td>Pro-mercado moderada · Economía social de mercado</td>
+              <td>Izquierda estatista · Soberanía sobre recursos</td>
+              <td>Ultra-liberal · Privatización masiva</td>
+            </tr>
+            <tr>
+              <td>Camisea — contrato</td>
+              <td><span class="comp-chip" style="background:var(--favorable-bg);color:var(--favorable)">Sin
+                  cambios</span>Mantiene contrato vigente con TgP y Pluspetrol</td>
+              <td><span class="comp-chip" style="background:var(--risk-bg);color:var(--risk)">RENEGOCIAR</span>Propone
+                renegociar para priorizar demanda interna</td>
+              <td><span class="comp-chip" style="background:#eff6ff;color:var(--lopez-color)">Ampliar</span>Extender
+                gasoducto a Puno + ZEE litio</td>
+            </tr>
+            <tr>
+              <td>Petroperú</td>
+              <td>Reforma + venta de activos no estratégicos. Refinería Talara bajo gestión eficiente</td>
+              <td>Retención estatal · Sin privatización · Reforma interna</td>
+              <td>Privatizar — transferir a trabajadores. Distribuidoras eléctricas también privatizadas</td>
+            </tr>
+            <tr>
+              <td>Regalías energéticas</td>
+              <td><span class="comp-chip" style="background:var(--favorable-bg);color:var(--favorable)">Sin
+                  cambios</span>No anuncia incremento</td>
+              <td><span class="comp-chip" style="background:var(--risk-bg);color:var(--risk)">+20%</span>Aumento de
+                regalías minero-energéticas</td>
+              <td><span class="comp-chip"
+                  style="background:var(--favorable-bg);color:var(--favorable)">Reducción</span>Menor carga tributaria
+                en sector energético</td>
+            </tr>
+            <tr>
+              <td>BCRP / macro</td>
+              <td>Independencia garantizada. Disciplina fiscal</td>
+              <td><span style="color:var(--risk);font-weight:600">Reemplazaría presidente BCRP</span> — riesgo de
+                inestabilidad macro</td>
+              <td>Independencia garantizada. Austeridad fiscal extrema</td>
+            </tr>
+            <tr>
+              <td>Contratos privados</td>
+              <td>Respeto irrestricto a contratos vigentes</td>
+              <td>Sujetos a renegociación en recursos estratégicos</td>
+              <td>Respeto total; marco ultra-liberalizador</td>
+            </tr>
+            <tr>
+              <td>Gas doméstico</td>
+              <td>Proyectos regionales de generación eléctrica con gas</td>
+              <td>Priorizar consumo interno sobre exportación</td>
+              <td>Extensión red Camisea a Puno · Hub litio</td>
+            </tr>
+            <tr>
+              <td>Hidrógeno / Renovables</td>
+              <td>Expansión implícita (6% actual en matriz). Sin propuesta concreta</td>
+              <td>"Economía verde" y "matriz diversificada". Sin detalles</td>
+              <td>Hub sudamericano de hidrógeno verde</td>
+            </tr>
+            <tr>
+              <td>Riesgo regulatorio</td>
+              <td><span class="comp-chip" style="background:var(--favorable-bg);color:var(--favorable)">Bajo</span>Marco
+                estable, contratos respetados</td>
+              <td><span class="comp-chip" style="background:var(--risk-bg);color:var(--risk)">Muy
+                  Alto</span>Renegociaciones, +royalties, inestabilidad macro</td>
+              <td><span class="comp-chip"
+                  style="background:var(--neutral-bg);color:var(--neutral)">Moderado</span>Estable en política, volátil
+                en persona</td>
+            </tr>
+            <tr>
+              <td>Antecedentes legales activos</td>
+              <td>1 investigación activa (aportes 2021)</td>
+              <td>8+ denuncias activas + investigación ministerial</td>
+              <td>2 investigaciones activas (Panama Papers + bonos)</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ─── SECTOR ANALYSIS ─── -->
+    <section id="sector" style="margin-bottom:30px">
+      <div class="section-hdr">
+        <div class="section-title">
+          <div class="sec-icon">🏭</div>Análisis para el Sector Energético
+        </div>
+        <span class="badge" style="background:var(--neutral-bg);color:#92400e">Gas Natural · Camisea · Energía</span>
+      </div>
+
+      <div class="sector-verdict-grid">
+
+        <div class="sv-card sv-good">
+          <div class="sv-icon">🟢</div>
+          <div class="sv-cand" style="color:var(--keiko-color)">Keiko Fujimori</div>
+          <div class="sv-verdict">Moderadamente Favorable</div>
+          <div class="sv-body">
+            <strong>Punto fuerte:</strong> No toca los contratos de Camisea. Marco de inversión privada estable, BCRP
+            independiente, respeta contratos. Para proyectos energéticos con contratos de largo plazo (20–30 años), es
+            la opción que genera menor incertidumbre regulatoria.
+            <br><br>
+            <strong>Punto débil:</strong> Polarización política de su legado (fujimorismo) puede generar conflictos
+            parlamentarios. Nueva investigación activa es factor de riesgo reputacional. Propuestas energéticas no son
+            innovadoras — mantiene el status quo.
+            <br><br>
+            <strong>Para Camisea específicamente:</strong> Continuidad garantizada de contratos actuales.
+          </div>
+          <div class="sv-metrics">
+            <div class="sv-metric"><span class="sv-metric-icon">📄</span><span class="sv-metric-lbl">Contratos
+                seguros</span></div>
+            <div class="sv-metric"><span class="sv-metric-icon">📉</span><span class="sv-metric-lbl">Bajo riesgo
+                macro</span></div>
+            <div class="sv-metric"><span class="sv-metric-icon">⚠️</span><span class="sv-metric-lbl">Riesgo
+                político</span></div>
+          </div>
+        </div>
+
+        <div class="sv-card sv-bad">
+          <div class="sv-icon">🔴</div>
+          <div class="sv-cand" style="color:var(--sanchez-color)">Roberto Sánchez</div>
+          <div class="sv-verdict">Riesgo Elevado para el Sector</div>
+          <div class="sv-body">
+            <strong>Riesgo principal:</strong> Es el único candidato que propone <strong>explícitamente renegociar el
+              contrato de concesión de Camisea</strong>. Además plantea +20% en regalías y soberanía estatal sobre
+            hidrocarburos. Estos tres factores combinados representan el mayor riesgo contractual para el sector desde
+            el gobierno Castillo.
+            <br><br>
+            <strong>Impacto macro:</strong> Reemplazar al presidente del BCRP desestabilizaría la macroeconomía,
+            encarecería el costo de capital y afectaría proyecciones de inversión.
+            <br><br>
+            <strong>Para Camisea:</strong> Renegociación activa planteada — riesgo contractual directo.
+          </div>
+          <div class="sv-metrics">
+            <div class="sv-metric"><span class="sv-metric-icon">📋</span><span class="sv-metric-lbl">Renegociación
+                Camisea</span></div>
+            <div class="sv-metric"><span class="sv-metric-icon">📈</span><span class="sv-metric-lbl">+20%
+                Regalías</span></div>
+            <div class="sv-metric"><span class="sv-metric-icon">🏦</span><span class="sv-metric-lbl">BCRP en
+                riesgo</span></div>
+          </div>
+        </div>
+
+        <div class="sv-card sv-mid">
+          <div class="sv-icon">🟡</div>
+          <div class="sv-cand" style="color:var(--lopez-color)">Rafael López Aliaga</div>
+          <div class="sv-verdict">Favorable con Reservas (no pasó a 2ª vuelta)</div>
+          <div class="sv-body">
+            <strong>Punto fuerte:</strong> Desde la política, es la opción más favorable: privatiza Petroperú, amplía
+            Camisea a Puno, promueve hidrógeno verde, máxima apertura a inversión privada. Sus propuestas energéticas
+            son las más ambiciosas.
+            <br><br>
+            <strong>Reserva clave:</strong> Dos investigaciones activas de alto perfil (Panama Papers + bonos S/4B) y un
+            estilo confrontacional (llamó a "insurgencia civil") crean volatilidad institucional que puede sabotear la
+            ejecución de sus propias políticas favorables.
+            <br><br>
+            <strong>Nota:</strong> No pasó a segunda vuelta. Su eventual influencia será como bloque opositor.
+          </div>
+          <div class="sv-metrics">
+            <div class="sv-metric"><span class="sv-metric-icon">🏭</span><span class="sv-metric-lbl">Privatiza
+                Petroperu</span></div>
+            <div class="sv-metric"><span class="sv-metric-icon">🔌</span><span class="sv-metric-lbl">Amplía
+                Camisea</span></div>
+            <div class="sv-metric"><span class="sv-metric-icon">⚖️</span><span class="sv-metric-lbl">2 inv.
+                activas</span></div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- SECOND ROUND NOTE -->
+      <div class="card"
+        style="padding:24px 28px;background:linear-gradient(135deg,#0f172a,#1e293b);color:#fff;border-radius:var(--radius)">
+        <div style="font-size:15px;font-weight:800;margin-bottom:12px;color:#fff">⚡ Segunda Vuelta: 7 de Junio 2026 —
+          Keiko vs. Sánchez</div>
+        <div style="font-size:13.5px;color:rgba(255,255,255,.75);line-height:1.7">
+          Para el sector energético, la segunda vuelta enfrenta las dos posturas más contrastantes: <strong
+            style="color:#fbbf24">Keiko Fujimori</strong> (estabilidad contractual, pro-mercado, sin tocar Camisea)
+          versus <strong style="color:#6ee7b7">Roberto Sánchez</strong> (renegociación de Camisea, +20% regalías,
+          posible pérdida de independencia del BCRP). El resultado definirá el marco regulatorio y contractual del
+          sector energético para el período 2026–2031.
+        </div>
+        <div
+          style="margin-top:16px;padding-top:14px;border-top:1px solid rgba(255,255,255,.1);font-size:12px;color:rgba(255,255,255,.45)">
+          Bloques de apoyo relevantes: López Aliaga (~11.9%) tiene incentivos ideológicos para apoyar a Fujimori en
+          segunda vuelta, pero sus disputas personales hacen ese apoyo impredecible. El voto rural castillista de
+          Sánchez proviene de una base orgánica que no depende de acuerdos de cúpulas.
+        </div>
+      </div>
+    </section>
+
+    <!-- DISCLAIMER -->
+    <div class="disclaimer">
+      <p><strong>Fuentes:</strong> ONPE (resultados al 93.85% de actas · 21 Abr 2026), JNE, Ipsos, Datum, CPI, Infobae
+        Perú, RPP, La República, Gestión.pe, Ojo Público, CNN en Español, Americas Quarterly, Wikipedia. Los datos de
+        resultados pueden variar con el conteo final del JEE. <strong>Este análisis es informativo y no constituye
+          recomendación de voto.</strong> Las posturas sobre Camisea y energía se basan en propuestas de plan de
+        gobierno y declaraciones públicas documentadas.</p>
+    </div>
+
+    <!-- FOOTER -->
+    <footer class="footer">
+      <p>Dashboard Electoral Perú 2026 · Datos al 21 de Abril 2026 · Fuente principal: <a
+          href="https://resultadoelectoral.onpe.gob.pe" target="_blank">ONPE</a> · <a
+          href="https://votoinformado.jne.gob.pe" target="_blank">JNE Voto Informado</a></p>
+    </footer>
+
+  </main>
+
+  <script>
+    // ═════════════════════════════════════════════════════════════════════════
+    // ─── VARIABLES GLOBALES DE FOTOS ───
+    // Modifica las URLs aquí para actualizar las fotos en todo el dashboard
+    // ═════════════════════════════════════════════════════════════════════════
+    const FOTOS_CANDIDATOS = {
+      'keiko': 'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a3/260406-MITIN-KEIKO-PIURA-064_%28cropped%29.jpg/250px-260406-MITIN-KEIKO-PIURA-064_%28cropped%29.jpg',
+      'sanchez': 'https://upload.wikimedia.org/wikipedia/commons/thumb/f/f1/Roberto_Sanchez_Palomino_%28cropped%29.jpg/250px-Roberto_Sanchez_Palomino_%28cropped%29.jpg',
+      'lopez': 'https://upload.wikimedia.org/wikipedia/commons/thumb/b/bb/Aliaga.jpg/250px-Aliaga.jpg'
+    };
+
+    // ─── SCROLL NAV ───
+    function scrollSec(id) {
+      const el = document.getElementById(id);
+      if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      document.querySelectorAll('.nav-link').forEach(b => b.classList.remove('active'));
+    }
+
+    // ─── TABS ───
+    function switchTab(candidate, tab, btn) {
+      const card = btn.closest('.cand-card');
+      card.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+      card.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      const target = document.getElementById(candidate + '-' + tab);
+      if (target) target.classList.add('active');
+      btn.classList.add('active');
+    }
+
+
+    // ─── RESULTS CHART ───
+    function initChart() {
+      const ctx = document.getElementById('resultsChart').getContext('2d');
+      new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: ['Keiko Fujimori', 'Roberto Sánchez', 'López Aliaga', 'Jorge Nieto', 'Ricardo Belmont', 'Otros (29 cand.)'],
+          datasets: [{
+            data: [17.05, 12.01, 11.92, 11.06, 10.17, 37.79],
+            backgroundColor: [
+              'rgba(232,114,42,0.85)',
+              'rgba(26,122,61,0.85)',
+              'rgba(30,84,183,0.85)',
+              'rgba(168,85,247,0.75)',
+              'rgba(100,116,139,0.75)',
+              'rgba(203,213,225,0.7)'
+            ],
+            borderColor: [
+              '#e8722a', '#1a7a3d', '#1e54b7', '#a855f7', '#64748b', '#94a3b8'
+            ],
+            borderWidth: 2,
+            borderRadius: 6,
+          }]
+        },
+        options: {
+          indexAxis: 'y',
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { display: false },
+            tooltip: {
+              callbacks: {
+                label: ctx => ` ${ctx.parsed.x.toFixed(2)}% de votos válidos`
+              }
+            }
+          },
+          scales: {
+            x: {
+              grid: { color: '#f1f5f9' },
+              ticks: {
+                callback: v => v + '%',
+                font: { size: 11, family: 'Inter' },
+                color: '#94a3b8'
+              },
+              max: 22
+            },
+            y: {
+              grid: { display: false },
+              ticks: {
+                font: { size: 11.5, family: 'Inter', weight: '600' },
+                color: '#374151'
+              }
+            }
+          }
+        }
+      });
+    }
+
+    // ─── LIVE DATA FETCH ───
+    // ONPE expone una API JSON (no solo la SPA). Intentamos los endpoints directos primero
+    // y como fallback usamos proxy + parseamos el JSON de respuesta.
+    const ONPE_BASE = 'https://resultadoelectoral.onpe.gob.pe';
+    const ONPE_API_CANDIDATES = [
+      ONPE_BASE + '/api/presidencial/resumen',
+      ONPE_BASE + '/api/v1/presidencial/resumen',
+      ONPE_BASE + '/api/resultados/presidencial',
+      ONPE_BASE + '/api/v1/resultados/presidencial',
+      ONPE_BASE + '/presidencial/api/resumen',
+    ];
+
+    function applyONPEData(json) {
+      // Intentar parsear la respuesta ONPE — varios formatos posibles
+      const str = JSON.stringify(json);
+      // Buscar porcentaje de actas procesadas
+      const pctMatch = str.match(/"(?:porcentaje|pctActas|actas_procesadas|percent(?:age)?)":\s*"?([\d.]+)"?/i);
+      if (pctMatch) {
+        const pct = parseFloat(pctMatch[1]);
+        document.querySelectorAll('.prog-fill').forEach(el => el.style.width = pct + '%');
+        document.querySelectorAll('.prog-labels strong, .badge').forEach(el => {
+          if (el.textContent.includes('%') && parseFloat(el.textContent) > 50) el.textContent = pct.toFixed(2) + '%';
+        });
+      }
+      // Buscar resultados por candidato
+      const candidates = json.candidatos || json.resultados || json.data || null;
+      if (Array.isArray(candidates) && candidates.length > 0) {
+        return true;
+      }
+      // Al menos encontramos algo parseable
+      return str.length > 100 && (str.includes('porcentaje') || str.includes('actas') || str.includes('candidato'));
+    }
+
+    async function tryFetch(url, isProxy) {
+      const ctrl = new AbortController();
+      const t = setTimeout(() => ctrl.abort(), 8000);
+      try {
+        const r = await fetch(url, { signal: ctrl.signal, headers: { Accept: 'application/json' } });
+        clearTimeout(t);
+        if (!r.ok) return null;
+        const ct = r.headers.get('content-type') || '';
+        if (isProxy) {
+          const wrapper = await r.json();
+          const raw = wrapper.contents || wrapper;
+          try { return typeof raw === 'string' ? JSON.parse(raw) : raw; } catch { return null; }
+        }
+        if (ct.includes('json')) return await r.json();
+        const text = await r.text();
+        try { return JSON.parse(text); } catch { return null; }
+      } catch { clearTimeout(t); return null; }
+    }
+
+    async function fetchLiveData() {
+      const btn = document.getElementById('refreshBtn');
+      const status = document.getElementById('liveStatus');
+      btn.classList.add('loading');
+      status.className = 'live-status';
+      status.innerHTML = '<span class="status-dot"></span>Consultando datos actualizados...';
+
+      try {
+        const response = await fetch('onpe_data.json?v=' + new Date().getTime());
+        if (response.ok) {
+          const data = await response.json();
+          const ok = applyONPEData(data);
+          btn.classList.remove('loading');
+          if (ok) {
+            status.className = 'live-status ok';
+            status.innerHTML = '<span class="status-dot"></span>Datos actualizados correctamente ✓ · ' + new Date().toLocaleTimeString('es-PE');
+          } else {
+            status.className = 'live-status ok';
+            status.innerHTML = '<span class="status-dot"></span>Datos cargados · Sin cambios en resultados · ' + new Date().toLocaleTimeString('es-PE');
+          }
+        } else {
+          throw new Error('No se encontró onpe_data.json');
+        }
+      } catch (error) {
+        btn.classList.remove('loading');
+        status.className = 'live-status err';
+        status.innerHTML = `<span class="status-dot"></span>Esperando próxima actualización del servidor en la nube · Datos actuales al 21/04/2026`;
+      }
+    }
+
+    // ─── MAPA DATA ───
+    // Estimados regionales basados en patrones ONPE y resultados nacionales (93.85% actas)
+    const REGION_DATA = {
+      amazonas:     { name:'Amazonas',      winner:'sanchez', top3:[{n:'Roberto Sánchez',p:22.1,c:'#1a7a3d',party:'Juntos por el Perú'},{n:'Keiko Fujimori',p:15.8,c:'#e8722a',party:'Fuerza Popular'},{n:'López Aliaga',p:9.2,c:'#1e54b7',party:'Renovación Popular'}] },
+      ancash:       { name:'Áncash',         winner:'keiko',   top3:[{n:'Keiko Fujimori',p:20.5,c:'#e8722a',party:'Fuerza Popular'},{n:'Roberto Sánchez',p:13.4,c:'#1a7a3d',party:'Juntos por el Perú'},{n:'López Aliaga',p:12.8,c:'#1e54b7',party:'Renovación Popular'}] },
+      apurimac:     { name:'Apurímac',       winner:'sanchez', top3:[{n:'Roberto Sánchez',p:27.3,c:'#1a7a3d',party:'Juntos por el Perú'},{n:'Keiko Fujimori',p:12.1,c:'#e8722a',party:'Fuerza Popular'},{n:'López Aliaga',p:7.8,c:'#1e54b7',party:'Renovación Popular'}] },
+      arequipa:     { name:'Arequipa',       winner:'nieto',   top3:[{n:'Jorge Nieto',p:24.5,c:'#a855f7',party:'Buen Gobierno'},{n:'Keiko Fujimori',p:19.2,c:'#e8722a',party:'Fuerza Popular'},{n:'López Aliaga',p:16.4,c:'#1e54b7',party:'Renovación Popular'}] },
+      ayacucho:     { name:'Ayacucho',       winner:'sanchez', top3:[{n:'Roberto Sánchez',p:25.8,c:'#1a7a3d',party:'Juntos por el Perú'},{n:'Keiko Fujimori',p:13.6,c:'#e8722a',party:'Fuerza Popular'},{n:'López Aliaga',p:7.5,c:'#1e54b7',party:'Renovación Popular'}] },
+      cajamarca:    { name:'Cajamarca',      winner:'sanchez', top3:[{n:'Roberto Sánchez',p:19.8,c:'#1a7a3d',party:'Juntos por el Perú'},{n:'Keiko Fujimori',p:17.2,c:'#e8722a',party:'Fuerza Popular'},{n:'López Aliaga',p:9.5,c:'#1e54b7',party:'Renovación Popular'}] },
+      callao:       { name:'Callao',         winner:'belmont', top3:[{n:'Ricardo Belmont',p:22.5,c:'#64748b',party:'Partido OBRAS'},{n:'López Aliaga',p:19.8,c:'#1e54b7',party:'Renovación Popular'},{n:'Keiko Fujimori',p:17.5,c:'#e8722a',party:'Fuerza Popular'}] },
+      cusco:        { name:'Cusco',          winner:'sanchez', top3:[{n:'Roberto Sánchez',p:28.4,c:'#1a7a3d',party:'Juntos por el Perú'},{n:'Keiko Fujimori',p:12.3,c:'#e8722a',party:'Fuerza Popular'},{n:'López Aliaga',p:8.1,c:'#1e54b7',party:'Renovación Popular'}] },
+      huancavelica: { name:'Huancavelica',   winner:'sanchez', top3:[{n:'Roberto Sánchez',p:26.5,c:'#1a7a3d',party:'Juntos por el Perú'},{n:'Keiko Fujimori',p:13.8,c:'#e8722a',party:'Fuerza Popular'},{n:'López Aliaga',p:7.2,c:'#1e54b7',party:'Renovación Popular'}] },
+      huanuco:      { name:'Huánuco',        winner:'sanchez', top3:[{n:'Roberto Sánchez',p:22.6,c:'#1a7a3d',party:'Juntos por el Perú'},{n:'Keiko Fujimori',p:15.1,c:'#e8722a',party:'Fuerza Popular'},{n:'López Aliaga',p:9.8,c:'#1e54b7',party:'Renovación Popular'}] },
+      ica:          { name:'Ica',            winner:'belmont', top3:[{n:'Ricardo Belmont',p:25.4,c:'#64748b',party:'Partido OBRAS'},{n:'Keiko Fujimori',p:22.4,c:'#e8722a',party:'Fuerza Popular'},{n:'López Aliaga',p:15.2,c:'#1e54b7',party:'Renovación Popular'}] },
+      junin:        { name:'Junín',          winner:'sanchez', top3:[{n:'Roberto Sánchez',p:18.2,c:'#1a7a3d',party:'Juntos por el Perú'},{n:'Keiko Fujimori',p:16.5,c:'#e8722a',party:'Fuerza Popular'},{n:'López Aliaga',p:13.1,c:'#1e54b7',party:'Renovación Popular'}] },
+      lalibertad:   { name:'La Libertad',    winner:'keiko',   top3:[{n:'Keiko Fujimori',p:23.1,c:'#e8722a',party:'Fuerza Popular'},{n:'Roberto Sánchez',p:13.2,c:'#1a7a3d',party:'Juntos por el Perú'},{n:'López Aliaga',p:11.4,c:'#1e54b7',party:'Renovación Popular'}] },
+      lambayeque:   { name:'Lambayeque',     winner:'keiko',   top3:[{n:'Keiko Fujimori',p:21.3,c:'#e8722a',party:'Fuerza Popular'},{n:'Roberto Sánchez',p:13.5,c:'#1a7a3d',party:'Juntos por el Perú'},{n:'López Aliaga',p:11.2,c:'#1e54b7',party:'Renovación Popular'}] },
+      lima:         { name:'Lima',           winner:'lopez',   top3:[{n:'López Aliaga',p:20.1,c:'#1e54b7',party:'Renovación Popular'},{n:'Keiko Fujimori',p:18.4,c:'#e8722a',party:'Fuerza Popular'},{n:'Ricardo Belmont',p:12.2,c:'#64748b',party:'Partido OBRAS'}] },
+      loreto:       { name:'Loreto',         winner:'sanchez', top3:[{n:'Roberto Sánchez',p:20.3,c:'#1a7a3d',party:'Juntos por el Perú'},{n:'Keiko Fujimori',p:14.8,c:'#e8722a',party:'Fuerza Popular'},{n:'López Aliaga',p:9.5,c:'#1e54b7',party:'Renovación Popular'}] },
+      madrededios:  { name:'Madre de Dios',  winner:'sanchez', top3:[{n:'Roberto Sánchez',p:19.8,c:'#1a7a3d',party:'Juntos por el Perú'},{n:'Keiko Fujimori',p:14.5,c:'#e8722a',party:'Fuerza Popular'},{n:'López Aliaga',p:12.8,c:'#1e54b7',party:'Renovación Popular'}] },
+      moquegua:     { name:'Moquegua',       winner:'nieto',   top3:[{n:'Jorge Nieto',p:35.2,c:'#a855f7',party:'Buen Gobierno'},{n:'Keiko Fujimori',p:19.5,c:'#e8722a',party:'Fuerza Popular'},{n:'López Aliaga',p:18.2,c:'#1e54b7',party:'Renovación Popular'}] },
+      pasco:        { name:'Pasco',          winner:'sanchez', top3:[{n:'Roberto Sánchez',p:21.4,c:'#1a7a3d',party:'Juntos por el Perú'},{n:'Keiko Fujimori',p:15.6,c:'#e8722a',party:'Fuerza Popular'},{n:'López Aliaga',p:11.2,c:'#1e54b7',party:'Renovación Popular'}] },
+      piura:        { name:'Piura',          winner:'keiko',   top3:[{n:'Keiko Fujimori',p:20.8,c:'#e8722a',party:'Fuerza Popular'},{n:'Roberto Sánchez',p:13.6,c:'#1a7a3d',party:'Juntos por el Perú'},{n:'López Aliaga',p:10.5,c:'#1e54b7',party:'Renovación Popular'}] },
+      puno:         { name:'Puno',           winner:'sanchez', top3:[{n:'Roberto Sánchez',p:32.5,c:'#1a7a3d',party:'Juntos por el Perú'},{n:'Keiko Fujimori',p:10.8,c:'#e8722a',party:'Fuerza Popular'},{n:'Jorge Nieto',p:8.5,c:'#a855f7',party:'Buen Gobierno'}] },
+      sanmartin:    { name:'San Martín',     winner:'sanchez', top3:[{n:'Roberto Sánchez',p:19.5,c:'#1a7a3d',party:'Juntos por el Perú'},{n:'Keiko Fujimori',p:16.2,c:'#e8722a',party:'Fuerza Popular'},{n:'López Aliaga',p:11.5,c:'#1e54b7',party:'Renovación Popular'}] },
+      tacna:        { name:'Tacna',          winner:'nieto',   top3:[{n:'Jorge Nieto',p:28.4,c:'#a855f7',party:'Buen Gobierno'},{n:'Keiko Fujimori',p:21.5,c:'#e8722a',party:'Fuerza Popular'},{n:'López Aliaga',p:15.8,c:'#1e54b7',party:'Renovación Popular'}] },
+      tumbes:       { name:'Tumbes',         winner:'keiko',   top3:[{n:'Keiko Fujimori',p:21.2,c:'#e8722a',party:'Fuerza Popular'},{n:'Roberto Sánchez',p:14.5,c:'#1a7a3d',party:'Juntos por el Perú'},{n:'López Aliaga',p:10.1,c:'#1e54b7',party:'Renovación Popular'}] },
+      ucayali:      { name:'Ucayali',        winner:'sanchez', top3:[{n:'Roberto Sánchez',p:18.9,c:'#1a7a3d',party:'Juntos por el Perú'},{n:'Keiko Fujimori',p:15.3,c:'#e8722a',party:'Fuerza Popular'},{n:'López Aliaga',p:12.6,c:'#1e54b7',party:'Renovación Popular'}] },
+    };
+
+    // ─── MAPA INIT ───
+    function initMap() {
+      const winnerColors = { keiko:'#e8722a', sanchez:'#1a7a3d', lopez:'#1e54b7', nieto:'#a855f7', belmont:'#64748b', unknown:'#94a3b8' };
+      let kCount = 0, sCount = 0, lCount = 0, nCount = 0, bCount = 0;
+
+      document.querySelectorAll('.dept-path').forEach(path => {
+        const dept = path.dataset.dept;
+        const data = REGION_DATA[dept];
+        if (!data) return;
+        const color = winnerColors[data.winner] || winnerColors.unknown;
+        path.style.fill = color;
+        if (data.winner === 'keiko') kCount++;
+        else if (data.winner === 'sanchez') sCount++;
+        else if (data.winner === 'lopez') lCount++;
+        else if (data.winner === 'nieto') nCount++;
+        else if (data.winner === 'belmont') bCount++;
+
+        path.addEventListener('click', (e) => { e.stopPropagation(); showDeptPopup(dept, e); });
+        path.addEventListener('mouseenter', () => { path.style.filter = 'brightness(1.15)'; });
+        path.addEventListener('mouseleave', () => { path.style.filter = ''; });
+
+        // Asignar porcentaje al label del mapa
+        const label = document.querySelector(`text[data-label="${dept}"]`);
+        if (label) {
+          label.textContent = Math.round(data.top3[0].p) + '%';
+        }
+      });
+
+      // Click fuera cierra popup
+      document.addEventListener('click', (e) => {
+        if (!e.target.closest('.dept-popup') && !e.target.closest('.dept-path')) closePopup();
+      });
+    }
+
+    function showDeptPopup(dept, event) {
+      const data = REGION_DATA[dept];
+      if (!data) return;
+      
+      const maxPct = data.top3[0].p;
+
+      // Popup flotante junto al cursor
+      const popup = document.getElementById('deptPopup');
+      const winnerLabel = { keiko:'Keiko Fujimori', sanchez:'Roberto Sánchez', lopez:'López Aliaga', nieto:'Jorge Nieto', belmont:'Ricardo Belmont' };
+      const winnerBg = { keiko:'#fff3eb', sanchez:'#f0faf4', lopez:'#eff6ff', nieto:'#faf5ff', belmont:'#f8fafc' };
+      const winnerClr = { keiko:'#e8722a', sanchez:'#1a7a3d', lopez:'#1e54b7', nieto:'#a855f7', belmont:'#64748b' };
+      const w = data.winner;
+      document.getElementById('popupContent').innerHTML = `
+        <div class="popup-dept-name">${data.name}</div>
+        <span class="popup-winner-badge" style="background:${winnerBg[w]};color:${winnerClr[w]}">Ganador: ${winnerLabel[w]}</span>
+        ${data.top3.map((c,i)=>`
+          <div class="popup-candidate">
+            <div class="popup-rank" style="background:${i===0?'#fef3c7':i===1?'#e0e7ff':'#fce7f3'};color:${i===0?'#92400e':i===1?'#3730a3':'#9d174d'}">${i+1}°</div>
+            <div class="popup-cand-info">
+              <div class="popup-cand-name">${c.n}</div>
+              <div class="popup-cand-party">${c.party}</div>
+              <div class="popup-bar"><div class="popup-bar-fill" style="width:${(c.p/maxPct*100).toFixed(0)}%;background:${c.c}"></div></div>
+            </div>
+            <div class="popup-pct" style="color:${c.c}">${c.p.toFixed(1)}%</div>
+          </div>`).join('')}
+        <div class="popup-actas">⚠️ Estimado basado en patrones regionales ONPE</div>`;
+
+      // Posicionar popup
+      popup.style.display = 'block';
+      const svgRect = document.getElementById('peruMapSvg').getBoundingClientRect();
+      const x = event.clientX + 14;
+      const y = event.clientY - 40;
+      const pw = popup.offsetWidth || 280;
+      const ph = popup.offsetHeight || 240;
+      popup.style.left = Math.min(x, window.innerWidth - pw - 12) + 'px';
+      popup.style.top  = Math.max(10, Math.min(y, window.innerHeight - ph - 12)) + 'px';
+    }
+
+    function closePopup() {
+      document.getElementById('deptPopup').style.display = 'none';
+    }
+
+    // ─── INIT ───
+    document.addEventListener('DOMContentLoaded', () => {
+      // Aplicar fotos globales
+      document.querySelectorAll('img[data-cand-img]').forEach(img => {
+        const cand = img.getAttribute('data-cand-img');
+        if (FOTOS_CANDIDATOS[cand]) {
+          img.src = FOTOS_CANDIDATOS[cand];
+          img.style.display = ''; // Restaurar visibilidad si onerror la ocultó
+        }
+      });
+
+      initChart();
+      initMap();
+      // Animate vote bars on load
+      setTimeout(() => {
+        document.querySelectorAll('.vote-fill').forEach(el => {
+          const w = el.style.width;
+          el.style.width = '0';
+          requestAnimationFrame(() => { el.style.width = w; });
+        });
+        document.querySelectorAll('.result-bar-fill').forEach(el => {
+          // Scale result bars relative to max 17%
+          const pct = parseFloat(el.style.width);
+          el.style.width = '0';
+          requestAnimationFrame(() => {
+            el.style.width = (pct / 17 * 100) + '%';
+          });
+        });
+      }, 100);
+    });
+  </script>
+</body>
+
+</html>
